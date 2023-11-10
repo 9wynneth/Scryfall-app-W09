@@ -106,9 +106,9 @@ struct ContentView: View {
                         NavigationLink(destination: CardDetail(card: card)) {
                             VStack {
                                 RemoteImage(url: card.image_uris.small)
-                                    .frame(width: 100, height: 150) // Adjust the size as needed
+                                    .frame(width: 100, height: 150)
                                 Text(card.name)
-                                    .font(.caption) // You can customize the font and style
+                                    .font(.caption) 
                             }
                         }
                     }
