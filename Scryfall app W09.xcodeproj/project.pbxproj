@@ -1,0 +1,588 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04F2221A2AFDB911002A2419 /* Scryfall_app_W09App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F222192AFDB911002A2419 /* Scryfall_app_W09App.swift */; };
+		04F2221C2AFDB911002A2419 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F2221B2AFDB911002A2419 /* ContentView.swift */; };
+		04F2221E2AFDB914002A2419 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04F2221D2AFDB914002A2419 /* Assets.xcassets */; };
+		04F222212AFDB914002A2419 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04F222202AFDB914002A2419 /* Preview Assets.xcassets */; };
+		04F2222B2AFDB914002A2419 /* Scryfall_app_W09Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F2222A2AFDB914002A2419 /* Scryfall_app_W09Tests.swift */; };
+		04F222352AFDB914002A2419 /* Scryfall_app_W09UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F222342AFDB914002A2419 /* Scryfall_app_W09UITests.swift */; };
+		04F222372AFDB914002A2419 /* Scryfall_app_W09UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F222362AFDB914002A2419 /* Scryfall_app_W09UITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		04F222272AFDB914002A2419 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04F2220E2AFDB911002A2419 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 04F222152AFDB911002A2419;
+			remoteInfo = "Scryfall app W09";
+		};
+		04F222312AFDB914002A2419 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04F2220E2AFDB911002A2419 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 04F222152AFDB911002A2419;
+			remoteInfo = "Scryfall app W09";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		04F222162AFDB911002A2419 /* Scryfall app W09.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Scryfall app W09.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04F222192AFDB911002A2419 /* Scryfall_app_W09App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scryfall_app_W09App.swift; sourceTree = "<group>"; };
+		04F2221B2AFDB911002A2419 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		04F2221D2AFDB914002A2419 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		04F222202AFDB914002A2419 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		04F222262AFDB914002A2419 /* Scryfall app W09Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Scryfall app W09Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04F2222A2AFDB914002A2419 /* Scryfall_app_W09Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scryfall_app_W09Tests.swift; sourceTree = "<group>"; };
+		04F222302AFDB914002A2419 /* Scryfall app W09UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Scryfall app W09UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04F222342AFDB914002A2419 /* Scryfall_app_W09UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scryfall_app_W09UITests.swift; sourceTree = "<group>"; };
+		04F222362AFDB914002A2419 /* Scryfall_app_W09UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scryfall_app_W09UITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		04F222132AFDB911002A2419 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04F222232AFDB914002A2419 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04F2222D2AFDB914002A2419 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		04F2220D2AFDB911002A2419 = {
+			isa = PBXGroup;
+			children = (
+				04F222182AFDB911002A2419 /* Scryfall app W09 */,
+				04F222292AFDB914002A2419 /* Scryfall app W09Tests */,
+				04F222332AFDB914002A2419 /* Scryfall app W09UITests */,
+				04F222172AFDB911002A2419 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		04F222172AFDB911002A2419 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				04F222162AFDB911002A2419 /* Scryfall app W09.app */,
+				04F222262AFDB914002A2419 /* Scryfall app W09Tests.xctest */,
+				04F222302AFDB914002A2419 /* Scryfall app W09UITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		04F222182AFDB911002A2419 /* Scryfall app W09 */ = {
+			isa = PBXGroup;
+			children = (
+				04F222192AFDB911002A2419 /* Scryfall_app_W09App.swift */,
+				04F2221B2AFDB911002A2419 /* ContentView.swift */,
+				04F2221D2AFDB914002A2419 /* Assets.xcassets */,
+				04F2221F2AFDB914002A2419 /* Preview Content */,
+			);
+			path = "Scryfall app W09";
+			sourceTree = "<group>";
+		};
+		04F2221F2AFDB914002A2419 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				04F222202AFDB914002A2419 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		04F222292AFDB914002A2419 /* Scryfall app W09Tests */ = {
+			isa = PBXGroup;
+			children = (
+				04F2222A2AFDB914002A2419 /* Scryfall_app_W09Tests.swift */,
+			);
+			path = "Scryfall app W09Tests";
+			sourceTree = "<group>";
+		};
+		04F222332AFDB914002A2419 /* Scryfall app W09UITests */ = {
+			isa = PBXGroup;
+			children = (
+				04F222342AFDB914002A2419 /* Scryfall_app_W09UITests.swift */,
+				04F222362AFDB914002A2419 /* Scryfall_app_W09UITestsLaunchTests.swift */,
+			);
+			path = "Scryfall app W09UITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		04F222152AFDB911002A2419 /* Scryfall app W09 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04F2223A2AFDB914002A2419 /* Build configuration list for PBXNativeTarget "Scryfall app W09" */;
+			buildPhases = (
+				04F222122AFDB911002A2419 /* Sources */,
+				04F222132AFDB911002A2419 /* Frameworks */,
+				04F222142AFDB911002A2419 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Scryfall app W09";
+			productName = "Scryfall app W09";
+			productReference = 04F222162AFDB911002A2419 /* Scryfall app W09.app */;
+			productType = "com.apple.product-type.application";
+		};
+		04F222252AFDB914002A2419 /* Scryfall app W09Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04F2223D2AFDB914002A2419 /* Build configuration list for PBXNativeTarget "Scryfall app W09Tests" */;
+			buildPhases = (
+				04F222222AFDB914002A2419 /* Sources */,
+				04F222232AFDB914002A2419 /* Frameworks */,
+				04F222242AFDB914002A2419 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04F222282AFDB914002A2419 /* PBXTargetDependency */,
+			);
+			name = "Scryfall app W09Tests";
+			productName = "Scryfall app W09Tests";
+			productReference = 04F222262AFDB914002A2419 /* Scryfall app W09Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		04F2222F2AFDB914002A2419 /* Scryfall app W09UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04F222402AFDB914002A2419 /* Build configuration list for PBXNativeTarget "Scryfall app W09UITests" */;
+			buildPhases = (
+				04F2222C2AFDB914002A2419 /* Sources */,
+				04F2222D2AFDB914002A2419 /* Frameworks */,
+				04F2222E2AFDB914002A2419 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04F222322AFDB914002A2419 /* PBXTargetDependency */,
+			);
+			name = "Scryfall app W09UITests";
+			productName = "Scryfall app W09UITests";
+			productReference = 04F222302AFDB914002A2419 /* Scryfall app W09UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		04F2220E2AFDB911002A2419 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					04F222152AFDB911002A2419 = {
+						CreatedOnToolsVersion = 14.3;
+					};
+					04F222252AFDB914002A2419 = {
+						CreatedOnToolsVersion = 14.3;
+						TestTargetID = 04F222152AFDB911002A2419;
+					};
+					04F2222F2AFDB914002A2419 = {
+						CreatedOnToolsVersion = 14.3;
+						TestTargetID = 04F222152AFDB911002A2419;
+					};
+				};
+			};
+			buildConfigurationList = 04F222112AFDB911002A2419 /* Build configuration list for PBXProject "Scryfall app W09" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 04F2220D2AFDB911002A2419;
+			productRefGroup = 04F222172AFDB911002A2419 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				04F222152AFDB911002A2419 /* Scryfall app W09 */,
+				04F222252AFDB914002A2419 /* Scryfall app W09Tests */,
+				04F2222F2AFDB914002A2419 /* Scryfall app W09UITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		04F222142AFDB911002A2419 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04F222212AFDB914002A2419 /* Preview Assets.xcassets in Resources */,
+				04F2221E2AFDB914002A2419 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04F222242AFDB914002A2419 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04F2222E2AFDB914002A2419 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		04F222122AFDB911002A2419 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04F2221C2AFDB911002A2419 /* ContentView.swift in Sources */,
+				04F2221A2AFDB911002A2419 /* Scryfall_app_W09App.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04F222222AFDB914002A2419 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04F2222B2AFDB914002A2419 /* Scryfall_app_W09Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04F2222C2AFDB914002A2419 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04F222352AFDB914002A2419 /* Scryfall_app_W09UITests.swift in Sources */,
+				04F222372AFDB914002A2419 /* Scryfall_app_W09UITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		04F222282AFDB914002A2419 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 04F222152AFDB911002A2419 /* Scryfall app W09 */;
+			targetProxy = 04F222272AFDB914002A2419 /* PBXContainerItemProxy */;
+		};
+		04F222322AFDB914002A2419 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 04F222152AFDB911002A2419 /* Scryfall app W09 */;
+			targetProxy = 04F222312AFDB914002A2419 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		04F222382AFDB914002A2419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		04F222392AFDB914002A2419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		04F2223B2AFDB914002A2419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Scryfall app W09/Preview Content\"";
+				DEVELOPMENT_TEAM = VHKSD665Y2;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gwen.Scryfall-app-W09";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		04F2223C2AFDB914002A2419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Scryfall app W09/Preview Content\"";
+				DEVELOPMENT_TEAM = VHKSD665Y2;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gwen.Scryfall-app-W09";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		04F2223E2AFDB914002A2419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VHKSD665Y2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gwen.Scryfall-app-W09Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Scryfall app W09.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Scryfall app W09";
+			};
+			name = Debug;
+		};
+		04F2223F2AFDB914002A2419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VHKSD665Y2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gwen.Scryfall-app-W09Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Scryfall app W09.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Scryfall app W09";
+			};
+			name = Release;
+		};
+		04F222412AFDB914002A2419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VHKSD665Y2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gwen.Scryfall-app-W09UITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Scryfall app W09";
+			};
+			name = Debug;
+		};
+		04F222422AFDB914002A2419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VHKSD665Y2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gwen.Scryfall-app-W09UITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Scryfall app W09";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04F222112AFDB911002A2419 /* Build configuration list for PBXProject "Scryfall app W09" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04F222382AFDB914002A2419 /* Debug */,
+				04F222392AFDB914002A2419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04F2223A2AFDB914002A2419 /* Build configuration list for PBXNativeTarget "Scryfall app W09" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04F2223B2AFDB914002A2419 /* Debug */,
+				04F2223C2AFDB914002A2419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04F2223D2AFDB914002A2419 /* Build configuration list for PBXNativeTarget "Scryfall app W09Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04F2223E2AFDB914002A2419 /* Debug */,
+				04F2223F2AFDB914002A2419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04F222402AFDB914002A2419 /* Build configuration list for PBXNativeTarget "Scryfall app W09UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04F222412AFDB914002A2419 /* Debug */,
+				04F222422AFDB914002A2419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 04F2220E2AFDB911002A2419 /* Project object */;
+}
