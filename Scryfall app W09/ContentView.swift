@@ -77,13 +77,15 @@ struct CardDetail: View {
     }
 }
 
-
-
-
-
 struct ContentView: View {
     @State private var cards: [Card] = []
     @State private var searchText = ""
+    @State private var currentSorting: CardSorting = .ascending
+
+    enum CardSorting: String {
+        case ascending = "A-Z"
+        case descending = "Z-A"
+    }
 
     var filteredCards: [Card] {
         if searchText.isEmpty {
@@ -96,10 +98,25 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ScrollView {
+                HStack {
+                    TextField("Search Cards", text: $searchText)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
 
-                TextField("Search Cards", text: $searchText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    Button(action: {
+                        currentSorting = currentSorting == .ascending ? .descending : .ascending
+                        cards.sort { card1, card2 in
+                            if currentSorting == .ascending {
+                                return card1.name < card2.name
+                            } else {
+                                return card1.name > card2.name
+                            }
+                        }
+                    }) {
+                        Text("Sort \(currentSorting.rawValue)")
+                    }
                     .padding()
+                }
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                     ForEach(filteredCards) { card in
@@ -108,7 +125,7 @@ struct ContentView: View {
                                 RemoteImage(url: card.image_uris.small)
                                     .frame(width: 100, height: 150)
                                 Text(card.name)
-                                    .font(.caption) 
+                                    .font(.caption)
                             }
                         }
                     }
@@ -127,12 +144,10 @@ struct ContentView: View {
                         print("Error loading JSON data: \(error)")
                     }
                 } else {
-                    print("Failed to find JSON file")
+                    print("Failed to find the JSON file")
                 }
             }
         }
     }
 }
-
-
 
