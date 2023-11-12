@@ -42,6 +42,7 @@ struct CardImageUris: Codable {
     let small: String
     let art_crop: String
     let large: String
+    let png: String
  
 }
 
@@ -157,6 +158,24 @@ extension String {
     }
 }
 
+struct CustomBackButton: View {
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var isPopupPresented: Bool
+
+    var body: some View {
+        Button(action: {
+            self.isPopupPresented = false
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "arrow.left")
+                .foregroundColor(.white)
+                .imageScale(.large)
+                .frame(width: 30, height: 30)
+                .opacity(isPopupPresented ? 0.5 : 1.0)
+        }
+    }
+}
+
 struct CardDetail: View {
     let card: Card
     @State private var isPopupPresented = false
@@ -172,71 +191,103 @@ struct CardDetail: View {
     var body: some View {
         ZStack {
             ScrollView {
-                VStack(spacing: 0) {
-                    RemoteImage(url: card.image_uris.art_crop)
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: UIScreen.main.bounds.height / 4)
-                        .edgesIgnoringSafeArea(.top)
-                        .offset(y: 20)
-
-                    VStack {
-                        Spacer()
-                        Spacer()
-                        Spacer()
+                RemoteImage(url: card.image_uris.art_crop)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: UIScreen.main.bounds.height / 4)
+                    .edgesIgnoringSafeArea(.top)
+                    .padding(.top, 0)
+                    .offset(y: -70)
+                    .onTapGesture {
+                        isPopupPresented.toggle()
                     }
+
+                HStack {
+                    Text(card.name)
+                        .font(.title)
+                        .bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(5)
+
                     Spacer()
-                    Spacer()
-                    VStack {
-                        Spacer()
-
-                        HStack {
-                            Text(card.name)
-                                .font(.title)
-                                .bold()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                            Spacer()
-                            ManaCostView(manaCost: card.mana_cost)
-                        }
-
-                        VStack(spacing: 5) {
-                            Text(card.type_line)
-                                .font(.headline)
-                                .padding(.horizontal)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .offset(x: -15)
-
-                            Text(card.oracle_text)
-                                .font(.body)
-                                .padding(15)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .foregroundColor(Color.gray.opacity(0.1))
-                                        .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 5)
-                                )
-                        }
-
-                        VStack(alignment: .leading, spacing: 5) {
-                            ForEach(legalitiesList, id: \.self) { legality in
-                                Text(legality)
-                                    .font(.title)
-                                    .background(legalityBackgroundColor)
-                                    .foregroundColor(legalityTextColor)
-                            }
-                        }
-                    }
-                    .padding()
+                    ManaCostView(manaCost: card.mana_cost)
+                        .padding(5)
                 }
-                .navigationBarBackButtonHidden(true)
-                .navigationBarItems(leading: CustomBackButton())
+
+                VStack(spacing: 5) {
+                    Text(card.type_line)
+                        .font(.headline)
+                        .padding(5)
+                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .offset(x: -15)
+
+                    Text(card.oracle_text)
+                        .font(.body)
+                        .padding(15)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundColor(Color.gray.opacity(0.1))
+                                .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 5)
+                                .padding(5)
+                        )
+
+                    HStack {
+                        Image(systemName: "arrow.left")
+                            .foregroundColor(.gray)
+                            .padding(5)
+                        Spacer()
+                        Button(action: {
+                            // Add action for "Versions" button
+                        }) {
+                            Text("Versions")
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.orange)
+                                .cornerRadius(5)
+                                .frame(maxWidth: 280, maxHeight: 50)
+                        }
+                        Spacer()
+
+                        Button(action: {
+                            // Add action for "Ruling" button
+                        }) {
+                            Text("Ruling")
+                                .foregroundColor(.gray)
+                                .padding()
+                                .background(Color.white)
+                                .border(Color.gray, width: 1)
+                                .cornerRadius(5)
+                                .frame(maxWidth: 280, maxHeight: 50)
+                        }
+                        Spacer()
+
+                        Image(systemName: "arrow.right")
+                            .foregroundColor(.gray)
+                            .padding(5)
+                    }
+                    .padding(.top, 10)
+                }
+
+                VStack(alignment: .leading, spacing: 5) {
+                    ForEach(legalitiesList, id: \.self) { legality in
+                        Text(legality)
+                            .font(.title)
+                            .background(legalityBackgroundColor)
+                            .foregroundColor(legalityTextColor)
+                    }
+                }
             }
-            .disabled(isPopupPresented) // Disable scrolling when the popup is presented
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(leading: CustomBackButton(isPopupPresented: $isPopupPresented))
 
             if isPopupPresented {
                 Color.black.opacity(0.5)
-                    .ignoresSafeArea() // Cover the entire screen with a semi-transparent background
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            isPopupPresented.toggle()
+                        }
 
-                VStack {
+                ZStack {
                     RemoteImage(url: card.image_uris.large)
                         .scaledToFit()
                         .frame(maxWidth: 300, maxHeight: UIScreen.main.bounds.height)
@@ -244,21 +295,43 @@ struct CardDetail: View {
                             isPopupPresented.toggle()
                         }
 
-                    Text("Download Icon") // Add your download icon here
+                    RoundedRectangle(cornerRadius: 25)
                         .foregroundColor(.white)
-                        .font(.title)
-                        .padding()
+                        .overlay(
+                            HStack(spacing: 5) {
+                                Image(systemName: "arrow.down.circle.fill")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.black)
+
+                                Text("Download")
+                                    .foregroundColor(.black)
+                                    .font(.headline)
+                                    .padding()
+                            }
+                        )
+                        .frame(maxWidth: 200, maxHeight: 50)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(10)
+                        .padding(.top, 500)
+                        .padding(.bottom, 5)
+                        .padding(.horizontal, 10)
+                        .alignmentGuide(.top) { d in d[.bottom] }
+                        .onTapGesture {
+                            if let url = URL(string: card.image_uris.png) {
+                                    UIApplication.shared.open(url)
+                                }
+                        }
+
                 }
                 .transition(.opacity)
                 .animation(.easeInOut)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-
             }
         }
-        .onTapGesture {
-            isPopupPresented.toggle()
-        }
     }
+
+
 
     var legalityBackgroundColor: Color {
         return cardLegalities.standard == "legal" ? Color.green : (cardLegalities.standard == "banned" ? Color.red :  Color.gray)
@@ -274,20 +347,10 @@ struct CardDetail: View {
 }
 
 
-struct CustomBackButton: View {
-    @Environment(\.presentationMode) var presentationMode
 
-    var body: some View {
-        Button(action: {
-            self.presentationMode.wrappedValue.dismiss()
-        }) {
-            Image(systemName: "arrow.left")
-                .foregroundColor(.white)
-                .imageScale(.large)
-                .frame(width: 30, height: 30)  
-        }
-    }
-}
+
+
+
 
 
 struct ContentView: View {
