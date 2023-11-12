@@ -10,6 +10,16 @@ struct Card: Identifiable, Codable {
     let mana_cost: String
     let type_line: String
     let oracle_text: String
+    let rarity: String
+    let artist: String
+    let prices: Prices
+
+        struct Prices: Codable {
+            let usd: String
+            let usd_foil: String
+            let eur: String
+            let eur_foil: String
+        }
     
 }
 
@@ -179,6 +189,12 @@ struct CustomBackButton: View {
 struct CardDetail: View {
     let card: Card
     @State private var isPopupPresented = false
+    @State private var selectedTab: Tab = .version // Default selected tab
+    
+    enum Tab {
+        case version
+        case ruling
+    }
 
     var legalitiesList: [String] {
         let mirror = Mirror(reflecting: card.legalities)
@@ -237,28 +253,29 @@ struct CardDetail: View {
                             .padding(5)
                         Spacer()
                         Button(action: {
-                            // Add action for "Versions" button
+                        selectedTab = .version // Switch to "Version" tab
                         }) {
-                            Text("Versions")
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.orange)
-                                .cornerRadius(5)
-                                .frame(maxWidth: 280, maxHeight: 50)
+                        Text("Details")
+                        .foregroundColor(selectedTab == .version ? .white : .black)
+                        .padding()
+                        .background(selectedTab == .version ? Color.orange : Color.white)
+                        .cornerRadius(5)
+                        .frame(maxWidth: 280, maxHeight: 50)
                         }
                         Spacer()
 
                         Button(action: {
-                            // Add action for "Ruling" button
+                        selectedTab = .ruling // Switch to "Ruling" tab
                         }) {
-                            Text("Ruling")
-                                .foregroundColor(.gray)
-                                .padding()
-                                .background(Color.white)
-                                .border(Color.gray, width: 1)
-                                .cornerRadius(5)
-                                .frame(maxWidth: 280, maxHeight: 50)
-                        }
+                        Text("Ruling")
+                                                                       .foregroundColor(selectedTab == .ruling ? .white : .gray)
+                                                                       .padding()
+                                                                       .background(selectedTab == .ruling ? Color.orange : Color.white)
+                                                                       .border(Color.gray, width: 1)
+                                                                       .cornerRadius(5)
+                                                                       .frame(maxWidth: 280, maxHeight: 50)
+                                                               }
+
                         Spacer()
 
                         Image(systemName: "arrow.right")
@@ -269,11 +286,53 @@ struct CardDetail: View {
                 }
 
                 VStack(alignment: .leading, spacing: 5) {
-                    ForEach(legalitiesList, id: \.self) { legality in
-                        Text(legality)
-                            .font(.title)
-                            .background(legalityBackgroundColor)
-                            .foregroundColor(legalityTextColor)
+                    if selectedTab == .ruling {
+                        ForEach(legalitiesList, id: \.self) { legality in
+                            Text(legality)
+                                .font(.title)
+                                .background(legalityBackgroundColor)
+                                .foregroundColor(legalityTextColor)
+                        }
+                    }
+                    else if selectedTab == .version {
+                        Text("Rarity: \(card.rarity)")
+                        Text("Artist: \(card.artist)")
+                        // Prices Section
+//                        Section(header: Text("Prices")) {
+//                            HStack {
+//                                // Empty cell for layout
+//                                Spacer()
+//
+//                                // Price headers
+//                                Text("USD")
+//                                    .bold()
+//                                    .frame(maxWidth: .infinity)
+//                                Text("EUR")
+//                                    .bold()
+//                                    .frame(maxWidth: .infinity)
+//                            }
+//
+//                            // Normal Prices
+//                            HStack {
+//                                Text("Normal")
+//                                    .frame(maxWidth: .infinity, alignment: .leading)
+//                                Text(card.prices.usd)
+//                                    .frame(maxWidth: .infinity)
+//                                Text(card.prices.eur)
+//                                    .frame(maxWidth: .infinity)
+//                            }
+//
+//                            // Foil Prices
+//                            HStack {
+//                                Text("Foil")
+//                                    .frame(maxWidth: .infinity, alignment: .leading)
+//                                Text(card.prices.usd_foil)
+//                                    .frame(maxWidth: .infinity)
+//                                Text(card.prices.eur_foil)
+//                                    .frame(maxWidth: .infinity)
+//                            }
+//                        }
+//                        .padding(.top, 10)
                     }
                 }
             }
@@ -345,11 +404,6 @@ struct CardDetail: View {
         return card.legalities
     }
 }
-
-
-
-
-
 
 
 
