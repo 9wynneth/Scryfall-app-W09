@@ -279,9 +279,10 @@ struct CardDetail: View {
                         selectedTab = .version // Switch to "Version" tab
                         }) {
                         Text("Details")
-                        .foregroundColor(selectedTab == .version ? .white : .black)
+                        .foregroundColor(selectedTab == .version ? .white : .gray)
                         .padding()
                         .background(selectedTab == .version ? Color.red : Color.white)
+                        .border(Color.gray, width: 1)
                         .cornerRadius(5)
                         .frame(maxWidth: 280, maxHeight: 50)
                         }
