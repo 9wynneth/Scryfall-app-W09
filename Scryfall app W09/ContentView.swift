@@ -12,16 +12,18 @@ struct Card: Identifiable, Codable {
     let oracle_text: String
     let rarity: String
     let artist: String
-    let prices: Prices
-
-        struct Prices: Codable {
-            let usd: String
-            let usd_foil: String
-            let eur: String
-            let eur_foil: String
-        }
+    let prices: Prices?
     
 }
+
+struct Prices: Codable {
+    let usd: String?
+    let usd_foil: String?
+    let eur: String?
+    let eur_foil: String?
+}
+
+
 
 struct Legalities: Codable {
     let standard: String
@@ -195,13 +197,32 @@ struct CardDetail: View {
         case version
         case ruling
     }
-
-    var legalitiesList: [String] {
-        let mirror = Mirror(reflecting: card.legalities)
-        return mirror.children.compactMap { label, value in
-            guard let legality = value as? String else { return nil }
-            return "\(label): \(legality)"
+    
+    var legalitiesList: [(String, String)] {
+            let mirror = Mirror(reflecting: card.legalities)
+            return mirror.children.compactMap { label, value in
+                guard let legality = value as? String else { return nil }
+                return (label ?? "", legality)
+            }
+    }
+    
+    func legalityBackgroundColor(for legality: String) -> Color {
+            switch legality {
+            case "legal":
+                return .green
+            case "banned":
+                return .red
+            default:
+                return Color.gray.opacity(0.5)
+            }
         }
+
+        func legalityTextColor(for legality: String) -> Color {
+            return legality == "legal" ? .white : .black
+        }
+    
+    var cardLegalities: Legalities {
+        return card.legalities
     }
 
     var body: some View {
@@ -245,7 +266,9 @@ struct CardDetail: View {
                                 .foregroundColor(Color.gray.opacity(0.1))
                                 .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 5)
                                 .padding(5)
+                                
                         )
+                    
 
                     HStack {
                         Image(systemName: "arrow.left")
@@ -258,7 +281,7 @@ struct CardDetail: View {
                         Text("Details")
                         .foregroundColor(selectedTab == .version ? .white : .black)
                         .padding()
-                        .background(selectedTab == .version ? Color.orange : Color.white)
+                        .background(selectedTab == .version ? Color.red : Color.white)
                         .cornerRadius(5)
                         .frame(maxWidth: 280, maxHeight: 50)
                         }
@@ -268,12 +291,12 @@ struct CardDetail: View {
                         selectedTab = .ruling // Switch to "Ruling" tab
                         }) {
                         Text("Ruling")
-                                                                       .foregroundColor(selectedTab == .ruling ? .white : .gray)
+                        .foregroundColor(selectedTab == .ruling ? .white : .gray)
                                                                        .padding()
-                                                                       .background(selectedTab == .ruling ? Color.orange : Color.white)
-                                                                       .border(Color.gray, width: 1)
-                                                                       .cornerRadius(5)
-                                                                       .frame(maxWidth: 280, maxHeight: 50)
+                        .background(selectedTab == .ruling ? Color.red : Color.white)
+                        .border(Color.gray, width: 1)
+                        .cornerRadius(5)
+                        .frame(maxWidth: 280, maxHeight: 50)
                                                                }
 
                         Spacer()
@@ -287,52 +310,105 @@ struct CardDetail: View {
 
                 VStack(alignment: .leading, spacing: 5) {
                     if selectedTab == .ruling {
-                        ForEach(legalitiesList, id: \.self) { legality in
-                            Text(legality)
-                                .font(.title)
-                                .background(legalityBackgroundColor)
-                                .foregroundColor(legalityTextColor)
-                        }
+                        ForEach(legalitiesList.sorted { $0.0 < $1.0 }, id: \.0) { label, legality in
+                                            HStack {
+                                                
+                                                Text(legality.capitalized.replacingOccurrences(of: "_", with: " "))
+                                                    .foregroundColor(legalityTextColor(for: legality))
+                                                    .padding(5)
+                                                    .frame(alignment: .center)
+                                                    .background(
+                                                        RoundedRectangle(cornerRadius: 0) // Rectangle, not rounded
+                                                            .foregroundColor(legalityBackgroundColor(for: legality))
+                                                            .frame(width: 100, height: 30)
+                                                    ).padding(5)
+                                                
+                                                Text(label.capitalized)
+                                                    .foregroundColor(.black)
+                                                    .padding(5)
+                                         
+                                             
+                                              
+                                            }
+                                        }
                     }
                     else if selectedTab == .version {
-                        Text("Rarity: \(card.rarity)")
-                        Text("Artist: \(card.artist)")
-                        // Prices Section
-//                        Section(header: Text("Prices")) {
-//                            HStack {
-//                                // Empty cell for layout
-//                                Spacer()
-//
-//                                // Price headers
-//                                Text("USD")
-//                                    .bold()
-//                                    .frame(maxWidth: .infinity)
-//                                Text("EUR")
-//                                    .bold()
-//                                    .frame(maxWidth: .infinity)
-//                            }
-//
-//                            // Normal Prices
-//                            HStack {
-//                                Text("Normal")
-//                                    .frame(maxWidth: .infinity, alignment: .leading)
-//                                Text(card.prices.usd)
-//                                    .frame(maxWidth: .infinity)
-//                                Text(card.prices.eur)
-//                                    .frame(maxWidth: .infinity)
-//                            }
-//
-//                            // Foil Prices
-//                            HStack {
-//                                Text("Foil")
-//                                    .frame(maxWidth: .infinity, alignment: .leading)
-//                                Text(card.prices.usd_foil)
-//                                    .frame(maxWidth: .infinity)
-//                                Text(card.prices.eur_foil)
-//                                    .frame(maxWidth: .infinity)
-//                            }
-//                        }
-//                        .padding(.top, 10)
+                        Text("Rarity: \(card.rarity)").padding(5)
+                        Text("Artist: \(card.artist)").padding(5)
+                        Text("PRICES").foregroundColor(.red).padding(5).fontWeight(.bold).padding(.top,8)
+                        // Prices Table
+                        if let prices = card.prices {
+                            VStack {
+                                HStack {
+                                    Spacer()
+                                    Text("Normal")
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity)
+                                    Spacer()
+                                    Text("Foil")
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(.orange)
+                                    Spacer()
+                                }
+                                .padding()
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+
+                                HStack {
+                                    Text("USD")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .foregroundColor(.green)
+                                    Spacer()
+                                    Text(prices.usd ?? "N/A")
+                                        .frame(maxWidth: .infinity)
+                                        .frame(alignment: .center)
+                                        .multilineTextAlignment(.center)
+                                    Spacer()
+                                    Text(prices.usd_foil ?? "N/A")
+                                        .frame(maxWidth: .infinity)
+                                        .frame(alignment: .center)
+                                        .multilineTextAlignment(.center)
+                                    Spacer()
+                                }
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(10)
+
+                                HStack {
+                                    Text("EUR")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .foregroundColor(.blue)
+                                    Spacer()
+                                    Text(prices.eur ?? "N/A")
+                                        .frame(maxWidth: .infinity)
+                                        .frame(alignment: .center)
+                                        .multilineTextAlignment(.center)
+                                    Spacer()
+                                    Text(prices.eur_foil ?? "N/A")
+                                        .frame(maxWidth: .infinity)
+                                        .frame(alignment: .center)
+                                        .multilineTextAlignment(.center)
+                                    Spacer()
+                                }
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(10)
+
+                            }
+                            .padding(.top, 2)
+                            .padding(5)
+                            .background(RoundedRectangle(cornerRadius: 15)
+                                            .fill(Color.gray.opacity(0.1))
+                                            .shadow(radius: 5))
+                        } else {
+                            Text("Prices information not available")
+                                .padding(.top, 10)
+                        }
+
+
+
+
                     }
                 }
             }
@@ -392,17 +468,6 @@ struct CardDetail: View {
 
 
 
-    var legalityBackgroundColor: Color {
-        return cardLegalities.standard == "legal" ? Color.green : (cardLegalities.standard == "banned" ? Color.red :  Color.gray)
-    }
-
-    var legalityTextColor: Color {
-        return cardLegalities.standard == "legal" ? Color.white : Color.black
-    }
-
-    var cardLegalities: Legalities {
-        return card.legalities
-    }
 }
 
 
