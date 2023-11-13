@@ -309,29 +309,55 @@ struct CardDetail: View {
                     .padding(.top, 10)
                 }
 
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading) {
                     if selectedTab == .ruling {
-                        ForEach(legalitiesList.sorted { $0.0 < $1.0 }, id: \.0) { label, legality in
-                                            HStack {
-                                                
+                        Text("LEGALITIES").foregroundColor(.orange).fontWeight(.bold).padding(5)
+                        HStack {
+                            VStack {
+                                ForEach(0..<(legalitiesList.count / 2) + 1) { index in
+                                    let (label, legality) = legalitiesList[index]
+                                    HStack {
+                                        Rectangle()
+                                            .fill(legalityBackgroundColor(for: legality))
+                                            .frame(width: 80, height: 30)
+                                            .overlay(
                                                 Text(legality.capitalized.replacingOccurrences(of: "_", with: " "))
                                                     .foregroundColor(legalityTextColor(for: legality))
-                                                    .padding(5)
                                                     .frame(alignment: .center)
-                                                    .background(
-                                                        RoundedRectangle(cornerRadius: 0) // Rectangle, not rounded
-                                                            .foregroundColor(legalityBackgroundColor(for: legality))
-                                                            .frame(width: 100, height: 30)
-                                                    ).padding(5)
-                                                
-                                                Text(label.capitalized)
-                                                    .foregroundColor(.black)
-                                                    .padding(5)
-                                         
-                                             
-                                              
-                                            }
-                                        }
+                                            )
+
+                                        Text(label.capitalized)
+                                            .foregroundColor(.black)
+                                            .frame(minWidth: 100, alignment: .leading)
+                                    }
+                                }
+                                Spacer()
+                            }
+                   
+
+                            VStack {
+                                ForEach((legalitiesList.count / 2) + 1..<legalitiesList.count) { index in
+                                    let (label, legality) = legalitiesList[index]
+                                    HStack {
+                                        Rectangle()
+                                            .fill(legalityBackgroundColor(for: legality))
+                                            .frame(width: 80, height: 30)
+                                            .overlay(
+                                                Text(legality.capitalized.replacingOccurrences(of: "_", with: " "))
+                                                    .foregroundColor(legalityTextColor(for: legality))
+                                                    .frame(alignment: .center)
+                                            )
+
+                                        Text(label.capitalized)
+                                            .foregroundColor(.black)
+                                            .frame(minWidth: 100, alignment: .leading)
+                                    }
+                                }
+                                Spacer()
+                            }
+                        }
+                        
+                        
                     }
                     else if selectedTab == .version {
                         Text("Rarity: \(card.rarity)").padding(5)
