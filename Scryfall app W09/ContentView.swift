@@ -497,6 +497,26 @@ struct CardDetail: View {
 
 }
 
+extension UIColor {
+    convenience init?(hex: String) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
+
+        var rgb: UInt64 = 0
+
+        guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else {
+            return nil
+        }
+
+        self.init(
+            red: CGFloat((rgb & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgb & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgb & 0x0000FF) / 255.0,
+            alpha: 1.0
+        )
+    }
+}
+
 
 
 struct ContentView: View {
@@ -520,25 +540,79 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                HStack {
-                    TextField("Search Cards", text: $searchText)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
+                VStack(spacing: 0) {
+                    
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                            .padding(.leading, 8)
+                        TextField("Search Cards", text: $searchText)
+                            .padding(8)
+                            .background(Color(UIColor(hex: "#3A4F67")!))
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                            .overlay(
+                                HStack {
+                                    Spacer()
+                                    if !searchText.isEmpty {
+                                        Button(action: {
+                                            searchText = ""
+                                        }) {
+                                            Image(systemName: "multiply.circle.fill")
+                                                .foregroundColor(.white)
+                                                .padding(.trailing, 8)
+                                        }
+                                    }
+                                }
+                            )
 
-                    Button(action: {
-                        currentSorting = currentSorting == .ascending ? .descending : .ascending
-                        cards.sort { card1, card2 in
-                            if currentSorting == .ascending {
-                                return card1.name < card2.name
-                            } else {
-                                return card1.name > card2.name
+                        Menu {
+                            Button(action: {
+                                currentSorting = .ascending
+                                cards.sort { $0.name < $1.name }
+                            }) {
+                                Label("Sort A to Z", systemImage: "arrow.up.circle")
                             }
+
+                            Button(action: {
+                                currentSorting = .descending
+                                cards.sort { $0.name > $1.name }
+                            }) {
+                                Label("Sort Z to A", systemImage: "arrow.down.circle")
+                            }
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down.circle")
+                                .foregroundColor(.white)
+                                .padding(.trailing, 8)
                         }
-                    }) {
-                        Text("Sort \(currentSorting.rawValue)")
                     }
                     .padding()
+                    .background(Color(#colorLiteral(red: 0.1735038753, green: 0.2392750688, blue: 0.3176470697, alpha: 1)))
+                    .ignoresSafeArea()
+                    .edgesIgnoringSafeArea(.all)
+                    
+                    
+                  
+                    Rectangle()
+                            .fill(Color(UIColor(hex: "#2C3D51")!))
+                            .frame(height: 40)
+        
+                            .overlay(
+                                HStack {
+                                    Image(systemName: "creditcard.fill")
+                                        .foregroundColor(.white)
+                                    Text("Cards")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 12))
+                                }
+                            )
+                  
+                    
                 }
+
+
+
+
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                     ForEach(filteredCards) { card in
@@ -546,13 +620,16 @@ struct ContentView: View {
                             VStack {
                                 RemoteImage(url: card.image_uris.small)
                                     .frame(width: 100, height: 150)
+
                                 Text(card.name)
                                     .font(.caption)
+                                    .foregroundColor(.black)
                             }
                         }
                     }
                 }
                 .padding()
+                
             }
             .onAppear {
                 if let url = Bundle.main.url(forResource: "WOT-Scryfall", withExtension: "json") {
