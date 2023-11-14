@@ -665,22 +665,27 @@ struct ContentView: View {
                         .ignoresSafeArea() // Ignore all safe areas
                 }
 
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                LazyVGrid(columns: [
+                    GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)), // Subtract padding and spacing
+                    GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
+                    GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3))
+                ], spacing: 10) {
                     ForEach(filteredCards.indices, id: \.self) { index in
                         NavigationLink(destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards)) {
                             VStack {
                                 RemoteImage(url: filteredCards[index].image_uris.small)
-                                    .frame(width: 100, height: 150)
+                                    .cornerRadius(10)
+                                    .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150) // Set the height accordingly
                                 Text(filteredCards[index].name)
                                     .font(.caption)
                                     .foregroundColor(.black)
                             }
                         }
                     }
-
                 }
                 .padding()
                 .background(Color.white)
+
             }
             .onAppear {
                 if let url = Bundle.main.url(forResource: "WOT-Scryfall", withExtension: "json") {
