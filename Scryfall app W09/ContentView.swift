@@ -170,6 +170,29 @@ extension String {
     }
 }
 
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(
+            RoundedCorner(radius: radius, corners: corners)
+        )
+    }
+}
+
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius*2, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}
+
+
 struct CustomBackButton: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var isPopupPresented: Bool
@@ -305,35 +328,35 @@ struct CardDetail: View {
                                             self.previousCard()
                                         }
                                     }) {
-                                        Image(systemName: "arrow.left")
+                                        Image(systemName: "chevron.left")
                                             .foregroundColor(.gray)
                                             .padding(5)
                                     }
                                     .disabled(currentIndex == 0)
                           Spacer()
                         Button(action: {
-                            selectedTab = .version // Switch to "Version" tab
+                            selectedTab = .version
                         }) {
                             Text("Details")
                                 .foregroundColor(selectedTab == .version ? .white : .gray)
                                 .padding()
                                 .background(selectedTab == .version ? Color.red : Color.white)
                                 .border(Color.gray, width: 1)
-                                .cornerRadius(5)
-                                .frame(maxWidth: 280, maxHeight: 50)
+                                .clipShape(Capsule(style: .continuous))
+                                .frame(maxWidth: .infinity)
                         }
                         Spacer()
                         
                         Button(action: {
-                            selectedTab = .ruling // Switch to "Ruling" tab
+                            selectedTab = .ruling
                         }) {
                             Text("Ruling")
                                 .foregroundColor(selectedTab == .ruling ? .white : .gray)
                                 .padding()
                                 .background(selectedTab == .ruling ? Color.red : Color.white)
                                 .border(Color.gray, width: 1)
-                                .cornerRadius(5)
-                                .frame(maxWidth: 280, maxHeight: 50)
+                                .clipShape(Capsule(style: .continuous))
+                                .frame(maxWidth: .infinity, maxHeight: 50)
                         }
                         
                         Spacer()
@@ -342,7 +365,7 @@ struct CardDetail: View {
                                     self.nextCard()
                                 }
                             }) {
-                                Image(systemName: "arrow.right")
+                                Image(systemName: "chevron.right")
                                     .foregroundColor(.gray)
                                     .padding(5)
                             }
@@ -350,7 +373,9 @@ struct CardDetail: View {
 
 
                     }
-                    .padding(.top, 10)
+                    .padding(.horizontal, 10) // Adjust padding between buttons
+                    .padding(.top, 5)
+                    .padding(.bottom, 5)
                 }
                 
                 VStack(alignment: .leading) {
