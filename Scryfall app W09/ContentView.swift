@@ -620,6 +620,28 @@ extension UIColor {
 }
 
 
+struct NoResultsView: View {
+    var body: some View {
+        HStack {
+            VStack {
+                Spacer()
+                Image(systemName: "square.and.pencil")
+                    .font(.system(size: 50))
+                    .foregroundColor(.gray)
+                    .padding(.top, 250)
+                Text("No results")
+                    .font(.headline)
+                    .foregroundColor(.gray)
+                    .padding(.bottom, 250)
+                Spacer()
+            }
+        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .offset(x:150)
+            
+
+        
+    }
+}
 
 struct ContentView: View {
     @State private var cards: [Card] = []
@@ -643,6 +665,7 @@ struct ContentView: View {
             return cards.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
+    
 
     var body: some View {
         NavigationView {
@@ -663,12 +686,15 @@ struct ContentView: View {
                                     if !searchText.isEmpty {
                                         Button(action: {
                                             searchText = ""
+                                           
+                                
                                         }) {
                                             Image(systemName: "multiply.circle.fill")
                                                 .foregroundColor(.white)
                                                 .padding(.trailing, 8)
                                         }
                                     }
+                                 
                                 }
                             )
                         Menu {
@@ -716,18 +742,23 @@ struct ContentView: View {
                     GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
                     GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3))
                 ], spacing: 10) {
-                    ForEach(filteredCards.indices, id: \.self) { index in
-                        NavigationLink(destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards)) {
-                            VStack {
-                                RemoteImage(url: filteredCards[index].image_uris.small)
-                                    .cornerRadius(10)
-                                    .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
-                                Text(filteredCards[index].name)
-                                    .font(.caption)
-                                    .foregroundColor(.black)
-                            }
-                        }
-                    }
+                    if searchText.isEmpty || !filteredCards.isEmpty {
+                                            ForEach(filteredCards.indices, id: \.self) { index in
+                                                NavigationLink(destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards)) {
+                                                    VStack {
+                                                        RemoteImage(url: filteredCards[index].image_uris.small)
+                                                            .cornerRadius(10)
+                                                            .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
+                                                        Text(filteredCards[index].name)
+                                                            .font(.caption)
+                                                            .foregroundColor(.black)
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            NoResultsView()
+                                        }
+                    
                 }
                 .padding()
                 .background(Color.white)
@@ -749,9 +780,12 @@ struct ContentView: View {
                 }
             }
             .background(Color(UIColor(hex: "#2C3D51")!)) // background color of the content
+        
         }
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color(UIColor(hex: "#2C3D51")!)) // background color of the navigation bar
+        
+   
+
     }
 }
 
