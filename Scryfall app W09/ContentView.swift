@@ -13,6 +13,7 @@ struct Card: Identifiable, Codable {
     let rarity: String
     let artist: String
     let prices: Prices?
+    let set_name: String
     
 }
 
@@ -373,7 +374,7 @@ struct CardDetail: View {
 
 
                     }
-                    .padding(.horizontal, 10) // Adjust padding between buttons
+                    .padding(.horizontal, 10)
                     .padding(.top, 5)
                     .padding(.bottom, 5)
                 }
@@ -432,75 +433,95 @@ struct CardDetail: View {
                         Text("Rarity: \(cards[currentIndex].rarity)").padding(5)
                         Text("Artist: \(cards[currentIndex].artist)").padding(5)
                         Text("PRICES").foregroundColor(.orange).padding(5).fontWeight(.bold).padding(.top,8)
-                        // Prices Table
-                        if let prices = cards[currentIndex].prices {
-                            VStack {
-                                HStack {
-                                    Spacer()
-                                    Text("Normal")
-                                        .font(.headline)
-                                        .frame(maxWidth: .infinity)
-                                    Spacer()
-                                    Text("Foil")
-                                        .font(.headline)
-                                        .frame(maxWidth: .infinity)
-                                        .foregroundColor(.orange)
-                                    Spacer()
-                                }
-                                .padding()
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
+                        
+                        VStack(spacing:0) {
+                           
+                                Text(cards[currentIndex].set_name)
+                                    .font(.system(size: 14))  // Adjust the font size as needed
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity, maxHeight: 40)
+                                   
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(Color(UIColor(hex: "#2C3D51")!))
+                                            .opacity(0.8)
+                                    ).frame(maxWidth: .infinity, maxHeight: 20)
+                                .edgesIgnoringSafeArea(.all)
+                                .padding(.horizontal, -5) 
+                          
                                 
-                                HStack {
-                                    Text("USD")
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .foregroundColor(.green)
-                                    Spacer()
-                                    Text(prices.usd ?? "N/A")
-                                        .frame(maxWidth: .infinity)
-                                        .frame(alignment: .center)
-                                        .multilineTextAlignment(.center)
-                                    Spacer()
-                                    Text(prices.usd_foil ?? "N/A")
-                                        .frame(maxWidth: .infinity)
-                                        .frame(alignment: .center)
-                                        .multilineTextAlignment(.center)
-                                    Spacer()
+                            // Prices Table
+                            if let prices = cards[currentIndex].prices {
+                                VStack {
+                                    HStack {
+                                        Spacer()
+                                        Text("Normal")
+                                            .font(.headline)
+                                            .frame(maxWidth: .infinity)
+                                        Spacer()
+                                        Text("Foil")
+                                            .font(.headline)
+                                            .frame(maxWidth: .infinity)
+                                            .foregroundColor(.orange)
+                                        Spacer()
+                                    }
+                                    .padding()
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(10)
+                                    
+                                    HStack {
+                                        Text("USD")
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .foregroundColor(.green)
+                                        Spacer()
+                                        Text(prices.usd ?? "N/A")
+                                            .frame(maxWidth: .infinity)
+                                            .frame(alignment: .center)
+                                            .multilineTextAlignment(.center)
+                                        Spacer()
+                                        Text(prices.usd_foil ?? "N/A")
+                                            .frame(maxWidth: .infinity)
+                                            .frame(alignment: .center)
+                                            .multilineTextAlignment(.center)
+                                        Spacer()
+                                    }
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(10)
+                                    
+                                    HStack {
+                                        Text("EUR")
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .foregroundColor(.blue)
+                                        Spacer()
+                                        Text(prices.eur ?? "N/A")
+                                            .frame(maxWidth: .infinity)
+                                            .frame(alignment: .center)
+                                            .multilineTextAlignment(.center)
+                                        Spacer()
+                                        Text(prices.eur_foil ?? "N/A")
+                                            .frame(maxWidth: .infinity)
+                                            .frame(alignment: .center)
+                                            .multilineTextAlignment(.center)
+                                        Spacer()
+                                    }
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(10)
+                                    
                                 }
-                                .padding()
-                                .background(Color.white)
-                                .cornerRadius(10)
-                                
-                                HStack {
-                                    Text("EUR")
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .foregroundColor(.blue)
-                                    Spacer()
-                                    Text(prices.eur ?? "N/A")
-                                        .frame(maxWidth: .infinity)
-                                        .frame(alignment: .center)
-                                        .multilineTextAlignment(.center)
-                                    Spacer()
-                                    Text(prices.eur_foil ?? "N/A")
-                                        .frame(maxWidth: .infinity)
-                                        .frame(alignment: .center)
-                                        .multilineTextAlignment(.center)
-                                    Spacer()
-                                }
-                                .padding()
-                                .background(Color.white)
-                                .cornerRadius(10)
-                                
+                                .padding(.top, 2)
+                                .padding(5)
+                                .background(RoundedRectangle(cornerRadius: 15)
+                                    .fill(Color.gray.opacity(0.1))
+                                    .shadow(radius: 5))
+                            } else {
+                                Text("Prices information not available")
+                                    .padding(.top, 10)
                             }
-                            .padding(.top, 2)
-                            .padding(5)
-                            .background(RoundedRectangle(cornerRadius: 15)
-                                .fill(Color.gray.opacity(0.1))
-                                .shadow(radius: 5))
-                        } else {
-                            Text("Prices information not available")
-                                .padding(.top, 10)
-                        }
+                            
+                        }.frame(maxWidth: .infinity)
                     }
                 }
             }
@@ -673,7 +694,7 @@ struct ContentView: View {
                     }
                     .padding()
                     .background(Color(#colorLiteral(red: 0.1735038753, green: 0.2392750688, blue: 0.3176470697, alpha: 1)))
-                    .ignoresSafeArea(edges: .top) // Ignore only the top safe area
+                    .ignoresSafeArea(edges: .top)
 
                     Rectangle()
                         .fill(Color(UIColor(hex: "#2C3D51")!))
@@ -687,11 +708,11 @@ struct ContentView: View {
                                     .font(.system(size: 12))
                             }
                         )
-                        .ignoresSafeArea() // Ignore all safe areas
+                        .ignoresSafeArea()
                 }
 
                 LazyVGrid(columns: [
-                    GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)), // Subtract padding and spacing
+                    GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
                     GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
                     GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3))
                 ], spacing: 10) {
@@ -700,7 +721,7 @@ struct ContentView: View {
                             VStack {
                                 RemoteImage(url: filteredCards[index].image_uris.small)
                                     .cornerRadius(10)
-                                    .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150) // Set the height accordingly
+                                    .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
                                 Text(filteredCards[index].name)
                                     .font(.caption)
                                     .foregroundColor(.black)
@@ -719,6 +740,7 @@ struct ContentView: View {
                         let decoder = JSONDecoder()
                         let decodedData = try decoder.decode(CardList.self, from: data)
                         cards = decodedData.data
+                        
                     } catch {
                         print("Error loading JSON data: \(error)")
                     }
@@ -726,10 +748,10 @@ struct ContentView: View {
                     print("Failed to find the JSON file")
                 }
             }
-            .background(Color(UIColor(hex: "#2C3D51")!)) // Set the background color of the content
+            .background(Color(UIColor(hex: "#2C3D51")!)) // background color of the content
         }
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color(UIColor(hex: "#2C3D51")!)) // Set the background color of the navigation bar
+        .background(Color(UIColor(hex: "#2C3D51")!)) // background color of the navigation bar
     }
 }
 
