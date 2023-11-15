@@ -1,7 +1,5 @@
 import SwiftUI
 
-
-
 struct Card: Identifiable, Codable {
     let id = UUID()
     let name: String
@@ -207,12 +205,17 @@ struct CustomBackButton: View {
                 .foregroundColor(.white)
                 .imageScale(.large)
                 .frame(width: 30, height: 30)
+                .bold(true)
                 .opacity(isPopupPresented ? 0.5 : 1.0)
         }
     }
 }
 
+
+
 struct CardDetail: View {
+    @Environment(\.presentationMode) var presentationMode
+
     let card: Card
     @State var currentIndex: Int
     let cards: [Card] // Add this property
@@ -286,20 +289,38 @@ struct CardDetail: View {
   
 
     var body: some View {
-        
         ZStack {
             GeometryReader { geometry in
 
                 ScrollView {
-                    RemoteImage(url: cards[currentIndex].image_uris.art_crop)
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: UIScreen.main.bounds.height / 4)
-                                        .edgesIgnoringSafeArea(.top)
-                                        .padding(.top, 0)
-                                        .offset(y: -30)
-                                        .onTapGesture {
-                                            isPopupPresented.toggle()
-                                        }
+                 
+                    ZStack {
+                        RemoteImage(url: cards[currentIndex].image_uris.art_crop)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: UIScreen.main.bounds.height / 4)
+                            .edgesIgnoringSafeArea(.top)
+                            .padding(.top, 0)
+                            .offset(y: -30)
+                            .onTapGesture {
+                                isPopupPresented.toggle()
+                            }
+
+                        Button(action: {
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .foregroundColor(.white)
+                                .padding(5)
+                        
+                        }
+                        .padding(5)
+                        .padding(.top, 10)
+                        .frame (alignment:.leading)
+                        .offset(x: -UIScreen.main.bounds.width / 2 + 30, y: -UIScreen.main.bounds.height / 8)
+
+                     
+                    }
+                    
 
                     HStack {
                         Text(cards[currentIndex].name)
@@ -662,16 +683,135 @@ struct NoResultsView: View {
     }
 }
 
+
+enum SelectedTab {
+    case home, search, collection, decks, scan
+}
+struct BottomNavBarButton: View {
+    let tab: SelectedTab
+    let text: String
+    let imageName: String
+    @Binding var selectedTab: SelectedTab // Use @Binding here
+
+    var body: some View {
+        VStack {
+            Image(systemName: imageName)
+                .font(.system(size: 24))
+                .foregroundColor(selectedTab == tab ? .blue : .gray) // Use selectedTab instead of isSelected
+            Text(text)
+                .font(.caption)
+                .foregroundColor(selectedTab == tab ? .blue : .gray) // Use selectedTab instead of isSelected
+        }
+    }
+}
+
+struct AllBottomNavBar: View {
+    @Binding var selectedTab: SelectedTab // Use @Binding here
+
+    var body: some View {
+        Spacer() // This spacer will push the content to the top
+
+                HStack {
+                    BottomNavBarButton(tab: .home, text: "Home", imageName: "house", selectedTab: $selectedTab)
+                        .onTapGesture {
+                            selectedTab = .home
+                        }
+                        .padding()
+                    BottomNavBarButton(tab: .search, text: "Search", imageName: "magnifyingglass", selectedTab: $selectedTab)
+                        .onTapGesture {
+                            selectedTab = .search
+                        }
+                        .padding()
+                    BottomNavBarButton(tab: .collection, text: "Collection", imageName: "folder", selectedTab: $selectedTab)
+                        .onTapGesture {
+                            selectedTab = .collection
+                        }
+                        .padding()
+                    BottomNavBarButton(tab: .decks, text: "Decks", imageName: "doc.plaintext", selectedTab: $selectedTab)
+                        .onTapGesture {
+                            selectedTab = .decks
+                        }
+                        .padding()
+                    BottomNavBarButton(tab: .scan, text: "Scan", imageName: "camera", selectedTab: $selectedTab)
+                        .onTapGesture {
+                            selectedTab = .scan
+                        }
+                        .padding()
+                }
+                .padding(.bottom,0)
+                .background(Color.white)
+                .edgesIgnoringSafeArea(.bottom)
+    }
+}
+
+
 struct ContentView: View {
     @State private var cards: [Card] = []
     @State private var searchText = ""
     @State private var currentSorting: CardSorting = .ascending
-    @State private var currentIndex = 0 
+    @State private var currentIndex = 0
+    @State private var selectedTab: SelectedTab = .search // Use @State here
+    @State private var isCardDetailViewActive = false
+    
+    private func bottomNavBar() -> some View {
+        HStack {
+            BottomNavBarButton(tab: .home, text: "Home", imageName: "house", selectedTab: $selectedTab)
+                .onTapGesture {
+                    selectedTab = .home
+                }
+                .padding(.horizontal)
 
-  
+            BottomNavBarButton(tab: .search, text: "Search", imageName: "magnifyingglass", selectedTab: $selectedTab)
+                .onTapGesture {
+                    selectedTab = .search
+                }
+                .padding(.horizontal)
+
+            BottomNavBarButton(tab: .collection, text: "Collection", imageName: "folder", selectedTab: $selectedTab)
+                .onTapGesture {
+                    selectedTab = .collection
+                }
+                .padding(.horizontal)
+
+            BottomNavBarButton(tab: .decks, text: "Decks", imageName: "doc.plaintext", selectedTab: $selectedTab)
+                .onTapGesture {
+                    selectedTab = .decks
+                }
+                .padding(.horizontal)
+
+            BottomNavBarButton(tab: .scan, text: "Scan", imageName: "camera", selectedTab: $selectedTab)
+                .onTapGesture {
+                    selectedTab = .scan
+                }
+                .padding(.horizontal)
+        }
+        .background(Color.white)
+        .edgesIgnoringSafeArea(.bottom)
+    }
 
     
+    private struct InProgressView: View {
+        @Binding var selectedTab: SelectedTab
+        var bottomNavBar: () -> AnyView
 
+        var body: some View {
+            ZStack {
+                VStack {
+                    Spacer()
+                    ProgressView("Maintainance")
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding()
+                    Spacer()
+                }
+                bottomNavBar()
+                    .offset(y: 370)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .ignoresSafeArea()
+        }
+    }
+    
+    
     enum CardSorting: String {
         case ascending = "A-Z"
         case descending = "Z-A"
@@ -684,127 +824,139 @@ struct ContentView: View {
             return cards.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
-    
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 0) {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                            .padding(.leading, 8)
-                        TextField("Search Cards", text: $searchText)
-                            .padding(8)
-                            .background(Color(UIColor(hex: "#3A4F67")!))
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                            .overlay(
-                                HStack {
-                                    Spacer()
-                                    if !searchText.isEmpty {
-                                        Button(action: {
-                                            searchText = ""
-                                
-                                        }) {
-                                            Image(systemName: "multiply.circle.fill")
-                                                .foregroundColor(.white)
-                                                .padding(.trailing, 8)
-                                        }
-                                    }
-                                 
-                                }.foregroundColor(.white)
-                            )
-                        Menu {
-                                                    Button(action: {
-                                                        currentSorting = .ascending
-                                                        cards.sort { $0.name < $1.name }
-                                                    }) {
-                                                        Label("Sort A to Z", systemImage: "arrow.up.circle")
-                                                    }
-
-                                                    Button(action: {
-                                                        currentSorting = .descending
-                                                        cards.sort { $0.name > $1.name }
-                                                    }) {
-                                                        Label("Sort Z to A", systemImage: "arrow.down.circle")
-                                                    }
-                                                } label: {
-                                                    Image(systemName: "arrow.up.arrow.down.circle")
+        if selectedTab == .scan || selectedTab == .home || selectedTab == .collection || selectedTab == .decks {
+            InProgressView(selectedTab: $selectedTab, bottomNavBar: { AnyView(self.bottomNavBar()) })
+        } else {
+            ZStack(alignment: .bottom) {
+                NavigationView {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.gray)
+                                    .padding(.leading, 8)
+                                TextField("Search Cards", text: $searchText)
+                                    .padding(8)
+                                    .background(Color(UIColor(hex: "#3A4F67")!))
+                                    .foregroundColor(.white)
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        HStack {
+                                            Spacer()
+                                            if !searchText.isEmpty {
+                                                Button(action: {
+                                                    searchText = ""
+                                                }) {
+                                                    Image(systemName: "multiply.circle.fill")
                                                         .foregroundColor(.white)
                                                         .padding(.trailing, 8)
                                                 }
-                        
-                    }
-                    .padding()
-                    .background(Color(#colorLiteral(red: 0.1735038753, green: 0.2392750688, blue: 0.3176470697, alpha: 1)))
-                    .ignoresSafeArea(edges: .top)
-
-                    Rectangle()
-                        .fill(Color(UIColor(hex: "#2C3D51")!))
-                        .frame(height: 40)
-                        .overlay(
-                            HStack {
-                                Image(systemName: "creditcard.fill")
-                                    .foregroundColor(.white)
-                                Text("Cards")
-                                    .foregroundColor(.white)
-                                    .font(.system(size: 12))
-                            }
-                        )
-                        .ignoresSafeArea()
-                }
-
-                LazyVGrid(columns: [
-                    GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
-                    GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
-                    GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3))
-                ], spacing: 10) {
-                    if searchText.isEmpty || !filteredCards.isEmpty {
-                                            ForEach(filteredCards.indices, id: \.self) { index in
-                                                NavigationLink(destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards)) {
-                                                    VStack {
-                                                        RemoteImage(url: filteredCards[index].image_uris.small)
-                                                            .cornerRadius(10)
-                                                            .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
-                                                        Text(filteredCards[index].name)
-                                                            .font(.caption)
-                                                            .foregroundColor(.black)
-                                                    }
-                                                }
                                             }
-                    }
-                    else {
-                        NoResultsView()
+                                        }.foregroundColor(.white)
+                                    )
+                                Menu {
+                                    Button(action: {
+                                        currentSorting = .ascending
+                                        cards.sort { $0.name < $1.name }
+                                    }) {
+                                        Label("Sort A to Z", systemImage: "arrow.up.circle")
+                                    }
+
+                                    Button(action: {
+                                        currentSorting = .descending
+                                        cards.sort { $0.name > $1.name }
+                                    }) {
+                                        Label("Sort Z to A", systemImage: "arrow.down.circle")
+                                    }
+                                } label: {
+                                    Image(systemName: "arrow.up.arrow.down.circle")
+                                        .foregroundColor(.white)
+                                        .padding(.trailing, 8)
+                                }
+                            }
+                            .padding()
+                            .background(Color(#colorLiteral(red: 0.1735038753, green: 0.2392750688, blue: 0.3176470697, alpha: 1)))
+                            .ignoresSafeArea(edges: .top)
+                            .edgesIgnoringSafeArea(.all)
+
+                            Spacer()
+
+                            Rectangle()
+                                .fill(Color(UIColor(hex: "#2C3D51")!))
+                                .frame(height: 40)
+                                .overlay(
+                                    HStack {
+                                        Image(systemName: "creditcard.fill")
+                                            .foregroundColor(.white)
+                                        Text("Cards")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 12))
+                                    }
+                                )
+                                .ignoresSafeArea()
+                                .edgesIgnoringSafeArea(.all)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                    
-                }
-                .padding()
-                .background(Color.white)
 
-            }
-            .onAppear {
-                if let url = Bundle.main.url(forResource: "WOT-Scryfall", withExtension: "json") {
-                    do {
-                        let data = try Data(contentsOf: url)
-                        let decoder = JSONDecoder()
-                        let decodedData = try decoder.decode(CardList.self, from: data)
-                        cards = decodedData.data
-                        
-                    } catch {
-                        print("Error loading JSON data: \(error)")
+                        LazyVGrid(columns: [
+                            GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
+                            GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
+                            GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3))
+                        ], spacing: 10) {
+                            if searchText.isEmpty || !filteredCards.isEmpty {
+                                ForEach(filteredCards.indices, id: \.self) { index in
+                                    NavigationLink(
+                                        destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards)
+                                    ) {
+                                        VStack {
+                                            RemoteImage(url: filteredCards[index].image_uris.small)
+                                                .cornerRadius(10)
+                                                .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
+                                            Text(filteredCards[index].name)
+                                                .font(.caption)
+                                                .foregroundColor(.black)
+                                        }
+                                    }
+                                    .onChange(of: isCardDetailViewActive) { newValue in
+                                        // Update the state to hide the bottom nav bar when entering the card detail view
+                                        withAnimation {
+                                            selectedTab = .search
+                                        }
+                                    }
+                                }
+                            } else {
+                                NoResultsView()
+                            }
+                        }
+                        .padding()
+                        .background(Color.white)
                     }
-                } else {
-                    print("Failed to find the JSON file")
+                    .overlay(bottomNavBar(), alignment: .bottom)
+                    .onAppear {
+                        if let url = Bundle.main.url(forResource: "WOT-Scryfall", withExtension: "json") {
+                            do {
+                                let data = try Data(contentsOf: url)
+                                let decoder = JSONDecoder()
+                                let decodedData = try decoder.decode(CardList.self, from: data)
+                                cards = decodedData.data
+                            } catch {
+                                print("Error loading JSON data: \(error)")
+                            }
+                        } else {
+                            print("Failed to find the JSON file")
+                        }
+                    }
+                    .background(Color(UIColor(hex: "#2C3D51")!)) // background color of the content
                 }
             }
-            .background(Color(UIColor(hex: "#2C3D51")!)) // background color of the content
-        
+            .navigationBarTitleDisplayMode(.inline)
+            .edgesIgnoringSafeArea(.all)
         }
-        .navigationBarTitleDisplayMode(.inline)
-        
-   
-
     }
+
+
 }
+
 
