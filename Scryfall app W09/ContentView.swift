@@ -218,386 +218,405 @@ struct CardDetail: View {
     let cards: [Card] // Add this property
     @State private var isPopupPresented = false
     @State private var selectedTab: Tab = .version // Default selected tab
-    
+    @State private var imageSize: CGFloat = 100 // Initial size of the image
+    @State private var navBarColor: Color = .clear
+
     init(card: Card, currentIndex: Int, cards: [Card]) {
-         self.card = card
-         self._currentIndex = State(initialValue: currentIndex)
-         self.cards = cards
-     }
+        self.card = card
+        self._currentIndex = State(initialValue: currentIndex)
+        self.cards = cards
+    }
 
-
-    
-    
     enum Tab {
         case version
         case ruling
     }
-    
-    var legalitiesList: [(String, String)] {
-            let mirror = Mirror(reflecting: cards[currentIndex].legalities)
-            return mirror.children.compactMap { label, value in
-                guard let legality = value as? String else { return nil }
-                return (label ?? "", legality)
-            }
-    }
-    
-    func legalityBackgroundColor(for legality: String) -> Color {
-            switch legality {
-            case "legal":
-                return .green
-            case "banned":
-                return .red
-            default:
-                return Color.gray.opacity(0.5)
-            }
-        }
 
-        func legalityTextColor(for legality: String) -> Color {
-            return legality == "legal" ? .white : .black
+    var legalitiesList: [(String, String)] {
+        let mirror = Mirror(reflecting: cards[currentIndex].legalities)
+        return mirror.children.compactMap { label, value in
+            guard let legality = value as? String else { return nil }
+            return (label ?? "", legality)
         }
-    
-    
+    }
+
+    func legalityBackgroundColor(for legality: String) -> Color {
+        switch legality {
+        case "legal":
+            return .green
+        case "banned":
+            return .red
+        default:
+            return Color.gray.opacity(0.5)
+        }
+    }
+
+    func legalityTextColor(for legality: String) -> Color {
+        return legality == "legal" ? .white : .black
+    }
+
     var cardLegalities: Legalities {
         return cards[currentIndex].legalities
     }
-    
-    private func previousCard() {
-            withAnimation {
-                if currentIndex > 0 {
-                    currentIndex -= 1
-                }
-            }
-        }
 
-        private func nextCard() {
-            withAnimation {
-                if currentIndex < cards.count - 1 {
-                    currentIndex += 1
-                }
+    private var hasPreviousCard: Bool {
+        return currentIndex > 0
+    }
+
+    private var hasNextCard: Bool {
+        return currentIndex < cards.count - 1
+    }
+
+    private func previousCard() {
+        withAnimation {
+            if hasPreviousCard {
+                currentIndex -= 1
             }
         }
+    }
+
+    private func nextCard() {
+        withAnimation {
+            if hasNextCard {
+                currentIndex += 1
+            }
+        }
+    }
+    
+  
 
     var body: some View {
+        
         ZStack {
-            ScrollView {
-                RemoteImage(url: cards[currentIndex].image_uris.art_crop)
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: UIScreen.main.bounds.height / 4)
-                    .edgesIgnoringSafeArea(.top)
-                    .padding(.top, 0)
-                    .offset(y: -70)
-                    .onTapGesture {
-                        isPopupPresented.toggle()
-                    }
-                
-                HStack {
-                    Text(cards[currentIndex].name)
-                        .font(.title)
-                        .bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(5)
-                    
-                    Spacer()
-                    ManaCostView(manaCost: cards[currentIndex].mana_cost)
-                        .padding(5)
-                }
-                
-                VStack(spacing: 5) {
-                    Text(cards[currentIndex].type_line)
-                        .font(.headline)
-                        .padding(5)
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .offset(x: -15)
-                    
-                    Text(cards[currentIndex].oracle_text)
-                        .font(.body)
-                        .padding(15)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .foregroundColor(Color.gray.opacity(0.1))
-                                .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 5)
-                                .padding(5)
-                            
-                        )
-                    
-                    
-                    HStack {
-                        Spacer()
-                                    Button(action: {
-                                        withAnimation {
-                                            self.previousCard()
+            GeometryReader { geometry in
+
+                ScrollView {
+                    RemoteImage(url: cards[currentIndex].image_uris.art_crop)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(height: UIScreen.main.bounds.height / 4)
+                                        .edgesIgnoringSafeArea(.top)
+                                        .padding(.top, 0)
+                                        .offset(y: -30)
+                                        .onTapGesture {
+                                            isPopupPresented.toggle()
                                         }
-                                    }) {
-                                        Image(systemName: "chevron.left")
-                                            .foregroundColor(.gray)
-                                            .padding(5)
-                                    }
-                                    .disabled(currentIndex == 0)
-                          Spacer()
-                        Button(action: {
-                            selectedTab = .version
-                        }) {
-                            Text("Details")
-                                .foregroundColor(selectedTab == .version ? .white : .gray)
-                                .padding()
-                                .background(selectedTab == .version ? Color.red : Color.white)
-                                .border(Color.gray, width: 1)
-                                .clipShape(Capsule(style: .continuous))
-                                .frame(maxWidth: .infinity)
-                        }
+
+                    HStack {
+                        Text(cards[currentIndex].name)
+                            .font(.title)
+                            .bold()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(5)
+
                         Spacer()
-                        
-                        Button(action: {
-                            selectedTab = .ruling
-                        }) {
-                            Text("Ruling")
-                                .foregroundColor(selectedTab == .ruling ? .white : .gray)
-                                .padding()
-                                .background(selectedTab == .ruling ? Color.red : Color.white)
-                                .border(Color.gray, width: 1)
-                                .clipShape(Capsule(style: .continuous))
-                                .frame(maxWidth: .infinity, maxHeight: 50)
-                        }
-                        
-                        Spacer()
-                        Button(action: {
-                                withAnimation {
-                                    self.nextCard()
-                                }
-                            }) {
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.gray)
+                        ManaCostView(manaCost: cards[currentIndex].mana_cost)
+                            .padding(5)
+                    }
+
+                    VStack(spacing: 2) {
+                        Text(cards[currentIndex].type_line)
+                            .font(.headline)
+                            .padding(5)
+                            .padding(.horizontal)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .offset(x: -15)
+
+                        Text(cards[currentIndex].oracle_text.replacingOccurrences(of: "\n", with: "\n\n"))
+                            .font(.body)
+                            .padding(15)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundColor(Color.gray.opacity(0.1))
+                                    .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 5)
                                     .padding(5)
-                            }
-                            .disabled(currentIndex == cards.count - 1)
+
+                            ).frame(maxWidth: .infinity)
 
 
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.top, 5)
-                    .padding(.bottom, 5)
-                }
-                
-                VStack(alignment: .leading) {
-                    if selectedTab == .ruling {
-                        Text("LEGALITIES").foregroundColor(.orange).fontWeight(.bold).padding(5)
                         HStack {
-                            VStack {
-                                ForEach(0..<(legalitiesList.count / 2) + 1) { index in
-                                    let (label, legality) = legalitiesList[index]
-                                    HStack {
-                                        Rectangle()
-                                            .fill(legalityBackgroundColor(for: legality))
-                                            .frame(width: 80, height: 30)
-                                            .overlay(
-                                                Text(legality.capitalized.replacingOccurrences(of: "_", with: " "))
-                                                    .foregroundColor(legalityTextColor(for: legality))
-                                                    .frame(alignment: .center)
-                                            )
-                                        
-                                        Text(label.capitalized)
-                                            .foregroundColor(.black)
-                                            .frame(minWidth: 100, alignment: .leading)
+                            Spacer()
+                            if hasPreviousCard {
+                                Button(action: {
+                                    withAnimation {
+                                        self.previousCard()
                                     }
+                                }) {
+                                    Image(systemName: "chevron.left")
+                                        .foregroundColor(.gray)
+                                        .padding(5)
                                 }
-                                Spacer()
+                                .disabled(!hasPreviousCard)
                             }
-                            
-                            
-                            VStack {
-                                ForEach((legalitiesList.count / 2) + 1..<legalitiesList.count) { index in
-                                    let (label, legality) = legalitiesList[index]
-                                    HStack {
-                                        Rectangle()
-                                            .fill(legalityBackgroundColor(for: legality))
-                                            .frame(width: 80, height: 30)
-                                            .overlay(
-                                                Text(legality.capitalized.replacingOccurrences(of: "_", with: " "))
-                                                    .foregroundColor(legalityTextColor(for: legality))
-                                                    .frame(alignment: .center)
-                                            )
-                                        
-                                        Text(label.capitalized)
-                                            .foregroundColor(.black)
-                                            .frame(minWidth: 100, alignment: .leading)
+                            Spacer()
+                            Button(action: {
+                                selectedTab = .version
+                            }) {
+                                Text("Details")
+                                    .foregroundColor(selectedTab == .version ? .white : .gray)
+                                    .padding()
+                                    .background(selectedTab == .version ? Color.red : Color.white)
+                                    .border(Color.gray, width: 1)
+                                    .clipShape(Capsule(style: .continuous))
+                                    .frame(maxWidth: .infinity)
+                            }
+                            Spacer()
+
+                            Button(action: {
+                                selectedTab = .ruling
+                            }) {
+                                Text("Ruling")
+                                    .foregroundColor(selectedTab == .ruling ? .white : .gray)
+                                    .padding()
+                                    .background(selectedTab == .ruling ? Color.red : Color.white)
+                                    .border(Color.gray, width: 1)
+                                    .clipShape(Capsule(style: .continuous))
+                                    .frame(maxWidth: .infinity, maxHeight: 50)
+                            }
+
+                            Spacer()
+
+                            if hasNextCard {
+                                Button(action: {
+                                    withAnimation {
+                                        self.nextCard()
                                     }
+                                }) {
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(.gray)
+                                        .padding(5)
                                 }
-                                Spacer()
+                                .disabled(!hasNextCard)
+
                             }
                         }
-                        
-                        
+                        .padding(.horizontal, 10)
+                        .padding(.top, 5)
+                        .padding(.bottom, 5)
                     }
-                    else if selectedTab == .version {
-                        Text("Rarity: \(cards[currentIndex].rarity)").padding(5)
-                        Text("Artist: \(cards[currentIndex].artist)").padding(5)
-                        Text("PRICES").foregroundColor(.orange).padding(5).fontWeight(.bold).padding(.top,8)
-                        
-                        VStack(spacing:0) {
-                           
+
+                    VStack(alignment: .leading) {
+                        if selectedTab == .ruling {
+                            Text("LEGALITIES").foregroundColor(.orange).fontWeight(.bold).padding(5)
+                            HStack {
+                                VStack {
+                                    ForEach(0..<(legalitiesList.count / 2) + 1) { index in
+                                        let (label, legality) = legalitiesList[index]
+                                        HStack {
+                                            Rectangle()
+                                                .fill(legalityBackgroundColor(for: legality))
+                                                .frame(width: 80, height: 30)
+                                                .overlay(
+                                                    Text(legality.capitalized.replacingOccurrences(of: "_", with: " "))
+                                                        .foregroundColor(legalityTextColor(for: legality))
+                                                        .frame(alignment: .center)
+                                                )
+
+                                            Text(label.capitalized)
+                                                .foregroundColor(.black)
+                                                .frame(minWidth: 100, alignment: .leading)
+                                        }
+                                    }
+                                    Spacer()
+                                }
+
+
+                                VStack {
+                                    ForEach((legalitiesList.count / 2) + 1..<legalitiesList.count) { index in
+                                        let (label, legality) = legalitiesList[index]
+                                        HStack {
+                                            Rectangle()
+                                                .fill(legalityBackgroundColor(for: legality))
+                                                .frame(width: 80, height: 30)
+                                                .overlay(
+                                                    Text(legality.capitalized.replacingOccurrences(of: "_", with: " "))
+                                                        .foregroundColor(legalityTextColor(for: legality))
+                                                        .frame(alignment: .center)
+                                                )
+
+                                            Text(label.capitalized)
+                                                .foregroundColor(.black)
+                                                .frame(minWidth: 100, alignment: .leading)
+                                        }
+                                    }
+                                    Spacer()
+                                }
+                            }
+
+
+                        } else if selectedTab == .version {
+                            Text("Rarity: \(cards[currentIndex].rarity)").padding(5)
+                            Text("Artist: \(cards[currentIndex].artist)").padding(5)
+                            Text("PRICES").foregroundColor(.orange).padding(5).fontWeight(.bold).padding(.top,8)
+
+                            VStack(spacing:0) {
+
                                 Text(cards[currentIndex].set_name)
                                     .font(.system(size: 14))  // Adjust the font size as needed
                                     .foregroundColor(.white)
                                     .padding()
                                     .frame(maxWidth: .infinity, maxHeight: 40)
-                                   
+
                                     .background(
                                         RoundedRectangle(cornerRadius: 10)
                                             .fill(Color(UIColor(hex: "#2C3D51")!))
                                             .opacity(0.8)
                                     ).frame(maxWidth: .infinity, maxHeight: 20)
-                                .edgesIgnoringSafeArea(.all)
-                                .padding(.horizontal, -5) 
-                          
-                                
-                            // Prices Table
-                            if let prices = cards[currentIndex].prices {
-                                VStack {
-                                    HStack {
-                                        Spacer()
-                                        Text("Normal")
-                                            .font(.headline)
-                                            .frame(maxWidth: .infinity)
-                                        Spacer()
-                                        Text("Foil")
-                                            .font(.headline)
-                                            .frame(maxWidth: .infinity)
-                                            .foregroundColor(.orange)
-                                        Spacer()
+                                    .edgesIgnoringSafeArea(.all)
+                                    .padding(.horizontal, -5)
+
+
+                                // Prices Table
+                                if let prices = cards[currentIndex].prices {
+                                    VStack {
+                                        HStack {
+                                            Spacer()
+                                            Text("Normal")
+                                                .font(.headline)
+                                                .frame(maxWidth: .infinity)
+                                            Spacer()
+                                            Text("Foil")
+                                                .font(.headline)
+                                                .frame(maxWidth: .infinity)
+                                                .foregroundColor(.orange)
+                                            Spacer()
+                                        }
+                                        .padding()
+                                        .background(Color.gray.opacity(0.2))
+                                        .cornerRadius(10)
+
+                                        HStack {
+                                            Text("USD")
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .foregroundColor(.green)
+                                            Spacer()
+                                            Text(prices.usd ?? "N/A")
+                                                .frame(maxWidth: .infinity)
+                                                .frame(alignment: .center)
+                                                .multilineTextAlignment(.center)
+                                            Spacer()
+                                            Text(prices.usd_foil ?? "N/A")
+                                                .frame(maxWidth: .infinity)
+                                                .frame(alignment: .center)
+                                                .multilineTextAlignment(.center)
+                                            Spacer()
+                                        }
+                                        .padding()
+                                        .background(Color.white)
+                                        .cornerRadius(10)
+
+                                        HStack {
+                                            Text("EUR")
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .foregroundColor(.blue)
+                                            Spacer()
+                                            Text(prices.eur ?? "N/A")
+                                                .frame(maxWidth: .infinity)
+                                                .frame(alignment: .center)
+                                                .multilineTextAlignment(.center)
+                                            Spacer()
+                                            Text(prices.eur_foil ?? "N/A")
+                                                .frame(maxWidth: .infinity)
+                                                .frame(alignment: .center)
+                                                .multilineTextAlignment(.center)
+                                            Spacer()
+                                        }
+                                        .padding()
+                                        .background(Color.white)
+                                        .cornerRadius(10)
+
                                     }
-                                    .padding()
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(10)
-                                    
-                                    HStack {
-                                        Text("USD")
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .foregroundColor(.green)
-                                        Spacer()
-                                        Text(prices.usd ?? "N/A")
-                                            .frame(maxWidth: .infinity)
-                                            .frame(alignment: .center)
-                                            .multilineTextAlignment(.center)
-                                        Spacer()
-                                        Text(prices.usd_foil ?? "N/A")
-                                            .frame(maxWidth: .infinity)
-                                            .frame(alignment: .center)
-                                            .multilineTextAlignment(.center)
-                                        Spacer()
-                                    }
-                                    .padding()
-                                    .background(Color.white)
-                                    .cornerRadius(10)
-                                    
-                                    HStack {
-                                        Text("EUR")
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .foregroundColor(.blue)
-                                        Spacer()
-                                        Text(prices.eur ?? "N/A")
-                                            .frame(maxWidth: .infinity)
-                                            .frame(alignment: .center)
-                                            .multilineTextAlignment(.center)
-                                        Spacer()
-                                        Text(prices.eur_foil ?? "N/A")
-                                            .frame(maxWidth: .infinity)
-                                            .frame(alignment: .center)
-                                            .multilineTextAlignment(.center)
-                                        Spacer()
-                                    }
-                                    .padding()
-                                    .background(Color.white)
-                                    .cornerRadius(10)
-                                    
+                                    .padding(.top, 2)
+                                    .padding(5)
+                                    .background(RoundedRectangle(cornerRadius: 15)
+                                        .fill(Color.gray.opacity(0.1))
+                                        .shadow(radius: 5))
+                                } else {
+                                    Text("Prices information not available")
+                                        .padding(.top, 10)
                                 }
-                                .padding(.top, 2)
-                                .padding(5)
-                                .background(RoundedRectangle(cornerRadius: 15)
-                                    .fill(Color.gray.opacity(0.1))
-                                    .shadow(radius: 5))
-                            } else {
-                                Text("Prices information not available")
-                                    .padding(.top, 10)
-                            }
-                            
-                        }.frame(maxWidth: .infinity)
+
+                            }.frame(maxWidth: .infinity)
+                        }
                     }
                 }
-            }
-            .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading: CustomBackButton(isPopupPresented: $isPopupPresented))
-            
-            if isPopupPresented {
-                Color.black.opacity(0.5)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        isPopupPresented.toggle()
-                    }
+                .navigationBarBackButtonHidden(true)
+                .navigationBarHidden(true)
+                .navigationBarItems(leading: CustomBackButton(isPopupPresented: $isPopupPresented))
                 
-                ZStack {
-                    RemoteImage(url: cards[currentIndex].image_uris.large)
-                        .scaledToFit()
-                        .frame(maxWidth: 300, maxHeight: UIScreen.main.bounds.height)
+
+                if isPopupPresented {
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
                         .onTapGesture {
                             isPopupPresented.toggle()
                         }
-                    
-                    RoundedRectangle(cornerRadius: 25)
-                        .foregroundColor(.white)
-                        .overlay(
-                            HStack(spacing: 5) {
-                                Image(systemName: "arrow.down.circle.fill")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundColor(.black)
-                                
-                                Text("Download")
-                                    .foregroundColor(.black)
-                                    .font(.headline)
-                                    .padding()
-                            }
-                        )
-                        .frame(maxWidth: 200, maxHeight: 50)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(10)
-                        .padding(.top, 500)
-                        .padding(.bottom, 5)
-                        .padding(.horizontal, 10)
-                        .alignmentGuide(.top) { d in d[.bottom] }
-                        .onTapGesture {
-                            if let url = URL(string: cards[currentIndex].image_uris.png) {
-                                UIApplication.shared.open(url)
-                            }
-                        }
-                    
-                }
-                .transition(.opacity)
-                .animation(.easeInOut)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            }
-        }.gesture(
-            DragGesture()
-                .onEnded { gesture in
-                    let swipeDistance = gesture.translation.width
+                    ZStack {
+                        RemoteImage(url: cards[currentIndex].image_uris.large)
+                            .scaledToFit()
+                            .frame(maxWidth: 300, maxHeight: UIScreen.main.bounds.height)
+                            .onTapGesture {
+                                isPopupPresented.toggle()
+                            }
 
-                    if swipeDistance < -50 && currentIndex < cards.count - 1 {
-                        withAnimation {
-                            currentIndex += 1
-                        }
-                    } else if swipeDistance > 50 && currentIndex > 0 {
-                        withAnimation {
-                            currentIndex -= 1
-                        }
+                        RoundedRectangle(cornerRadius: 25)
+                            .foregroundColor(.white)
+                            .overlay(
+                                HStack(spacing: 5) {
+                                    Image(systemName: "arrow.down.circle.fill")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundColor(.black)
+
+                                    Text("Download")
+                                        .foregroundColor(.black)
+                                        .font(.headline)
+                                        .padding()
+                                }
+                            )
+                            .frame(maxWidth: 200, maxHeight: 50)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(10)
+                            .padding(.top, 500)
+                            .padding(.bottom, 5)
+                            .padding(.horizontal, 10)
+                            .alignmentGuide(.top) { d in d[.bottom] }
+                            .onTapGesture {
+                                if let url = URL(string: cards[currentIndex].image_uris.png) {
+                                    UIApplication.shared.open(url)
+                                }
+                            }
+
                     }
+                    .transition(.opacity)
+                    .animation(.easeInOut)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
+
                 }
-        )
+            }.gesture(
+                DragGesture()
+                    .onEnded { gesture in
+                        let swipeDistance = gesture.translation.width
 
-    
+                        if swipeDistance < -50 && currentIndex < cards.count - 1 {
+                            withAnimation {
+                                currentIndex += 1
+                            }
+                        } else if swipeDistance > 50 && currentIndex > 0 {
+                            withAnimation {
+                                currentIndex -= 1
+                            }
+                        }
+                        
+                    }
+            )
+            
+            
+        }
     }
-
 }
+
 
 extension UIColor {
     convenience init?(hex: String) {
@@ -686,7 +705,6 @@ struct ContentView: View {
                                     if !searchText.isEmpty {
                                         Button(action: {
                                             searchText = ""
-                                           
                                 
                                         }) {
                                             Image(systemName: "multiply.circle.fill")
@@ -695,7 +713,7 @@ struct ContentView: View {
                                         }
                                     }
                                  
-                                }
+                                }.foregroundColor(.white)
                             )
                         Menu {
                                                     Button(action: {
@@ -755,9 +773,10 @@ struct ContentView: View {
                                                     }
                                                 }
                                             }
-                                        } else {
-                                            NoResultsView()
-                                        }
+                    }
+                    else {
+                        NoResultsView()
+                        }
                     
                 }
                 .padding()
