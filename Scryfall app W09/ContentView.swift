@@ -221,13 +221,23 @@ struct CardDetail: View {
     let cards: [Card] // Add this property
     @State private var isPopupPresented = false
     @State private var selectedTab: Tab = .version // Default selected tab
-    @State private var imageSize: CGFloat = 100 // Initial size of the image
+    @State private var imageSize: CGFloat = 100
     @State private var navBarColor: Color = .clear
+    @Binding var collection: [Card]
+    @State private var showAlert = false
 
-    init(card: Card, currentIndex: Int, cards: [Card]) {
+
+
+    private func showAlertFunc() {
+        showAlert = true
+    }
+
+    init(card: Card, currentIndex: Int, cards: [Card], collection: Binding<[Card]>) {
         self.card = card
         self._currentIndex = State(initialValue: currentIndex)
         self.cards = cards
+        self._collection = collection
+
     }
 
     enum Tab {
@@ -286,6 +296,14 @@ struct CardDetail: View {
         }
     }
     
+    func addToCollection() {
+            if !collection.contains(where: { $0.id == card.id }) {
+                collection.append(card)
+                showAlertFunc()
+            } else {
+                print("Card is already in the collection.")
+            }
+        }
   
 
     var body: some View {
@@ -311,6 +329,8 @@ struct CardDetail: View {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.white)
                                 .padding(5)
+                                .font(Font.system(size: 20, weight: .bold)) // Adjust size and weight
+
                         
                         }
                         .padding(5)
@@ -318,7 +338,6 @@ struct CardDetail: View {
                         .frame (alignment:.leading)
                         .offset(x: -UIScreen.main.bounds.width / 2 + 30, y: -UIScreen.main.bounds.height / 8)
 
-                     
                     }
                     
 
@@ -353,6 +372,26 @@ struct CardDetail: View {
 
                             ).frame(maxWidth: .infinity)
 
+     
+                        HStack {
+                            Button(action: {
+                                        addToCollection()
+                                    }) {
+                                        Text("Add to Collection")
+                                            .padding()
+                                            .foregroundColor(.white)
+                                            .background(Color(UIColor(hex: "#2C3D51")!))
+                                            .cornerRadius(10)
+                                    }
+                                    .padding()
+                                    .alert(isPresented: $showAlert) {
+                                                Alert(
+                                                    title: Text("Added to your collection successfully"),
+                                                    message: Text("Check it out on your collection"),
+                                                    dismissButton: .default(Text("OKAY")) // Single button with "OK" label
+                                                )
+                                            }
+                        }
 
                         HStack {
                             Spacer()
@@ -414,6 +453,8 @@ struct CardDetail: View {
                         .padding(.top, 5)
                         .padding(.bottom, 5)
                     }
+                    
+
 
                     VStack(alignment: .leading) {
                         if selectedTab == .ruling {
@@ -705,45 +746,6 @@ struct BottomNavBarButton: View {
     }
 }
 
-struct AllBottomNavBar: View {
-    @Binding var selectedTab: SelectedTab // Use @Binding here
-
-    var body: some View {
-        Spacer() // This spacer will push the content to the top
-
-                HStack {
-                    BottomNavBarButton(tab: .home, text: "Home", imageName: "house", selectedTab: $selectedTab)
-                        .onTapGesture {
-                            selectedTab = .home
-                        }
-                        .padding()
-                    BottomNavBarButton(tab: .search, text: "Search", imageName: "magnifyingglass", selectedTab: $selectedTab)
-                        .onTapGesture {
-                            selectedTab = .search
-                        }
-                        .padding()
-                    BottomNavBarButton(tab: .collection, text: "Collection", imageName: "folder", selectedTab: $selectedTab)
-                        .onTapGesture {
-                            selectedTab = .collection
-                        }
-                        .padding()
-                    BottomNavBarButton(tab: .decks, text: "Decks", imageName: "doc.plaintext", selectedTab: $selectedTab)
-                        .onTapGesture {
-                            selectedTab = .decks
-                        }
-                        .padding()
-                    BottomNavBarButton(tab: .scan, text: "Scan", imageName: "camera", selectedTab: $selectedTab)
-                        .onTapGesture {
-                            selectedTab = .scan
-                        }
-                        .padding()
-                }
-                .padding(.bottom,0)
-                .background(Color.white)
-                .edgesIgnoringSafeArea(.bottom)
-    }
-}
-
 
 struct ContentView: View {
     @State private var cards: [Card] = []
@@ -752,6 +754,9 @@ struct ContentView: View {
     @State private var currentIndex = 0
     @State private var selectedTab: SelectedTab = .search // Use @State here
     @State private var isCardDetailViewActive = false
+    @State private var collection: [Card] = []
+    
+
     
     private func bottomNavBar() -> some View {
         HStack {
@@ -811,6 +816,36 @@ struct ContentView: View {
         }
     }
     
+    private struct collectionView: View {
+        @Binding var selectedTab: SelectedTab
+        @Binding var collection: [Card] // Assuming you have a collection binding
+        var bottomNavBar: () -> AnyView
+        var body: some View {
+            ZStack {
+                NavigationView {
+                    List {
+                        ForEach(collection) { card in
+                            NavigationLink(destination: CardDetail(card: card, currentIndex: 0, cards: collection, collection: $collection)) {
+                                Text(card.name)
+                            }
+                        }
+                        .onDelete(perform: deleteItem)
+                    }
+                    .navigationBarTitle("My Collection")
+                    .navigationBarItems(trailing: EditButton()) // Add EditButton to enable deletion
+                }
+                bottomNavBar()
+                    .offset(y: 370)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .ignoresSafeArea()
+        }
+        private func deleteItem(at offsets: IndexSet) {
+            collection.remove(atOffsets: offsets)
+        }
+    }
+    
+    
     
     enum CardSorting: String {
         case ascending = "A-Z"
@@ -826,9 +861,14 @@ struct ContentView: View {
     }
 
     var body: some View {
-        if selectedTab == .scan || selectedTab == .home || selectedTab == .collection || selectedTab == .decks {
+        if selectedTab == .scan || selectedTab == .home || selectedTab == .decks {
             InProgressView(selectedTab: $selectedTab, bottomNavBar: { AnyView(self.bottomNavBar()) })
-        } else {
+        }
+        else if selectedTab == .collection {
+            collectionView(selectedTab: $selectedTab, collection: $collection, bottomNavBar: { AnyView(self.bottomNavBar()) })
+        }
+
+        else {
             ZStack(alignment: .bottom) {
                 NavigationView {
                     ScrollView {
@@ -908,7 +948,7 @@ struct ContentView: View {
                             if searchText.isEmpty || !filteredCards.isEmpty {
                                 ForEach(filteredCards.indices, id: \.self) { index in
                                     NavigationLink(
-                                        destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards)
+                                        destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards, collection: $collection)
                                     ) {
                                         VStack {
                                             RemoteImage(url: filteredCards[index].image_uris.small)
