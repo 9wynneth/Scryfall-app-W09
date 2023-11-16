@@ -15,7 +15,6 @@
 		04F222352AFDB914002A2419 /* Scryfall_app_W09UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F222342AFDB914002A2419 /* Scryfall_app_W09UITests.swift */; };
 		04F222372AFDB914002A2419 /* Scryfall_app_W09UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F222362AFDB914002A2419 /* Scryfall_app_W09UITestsLaunchTests.swift */; };
 		04F222442AFDC0A3002A2419 /* WOT-Scryfall.json in Resources */ = {isa = PBXBuildFile; fileRef = 04F222432AFDC0A3002A2419 /* WOT-Scryfall.json */; };
-		04F222482AFDC381002A2419 /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F222472AFDC381002A2419 /* RemoteImage.swift */; };
 		04F2224A2AFDDA6A002A2419 /* LegalitiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F222492AFDDA6A002A2419 /* LegalitiesView.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,7 +47,6 @@
 		04F222342AFDB914002A2419 /* Scryfall_app_W09UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scryfall_app_W09UITests.swift; sourceTree = "<group>"; };
 		04F222362AFDB914002A2419 /* Scryfall_app_W09UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scryfall_app_W09UITestsLaunchTests.swift; sourceTree = "<group>"; };
 		04F222432AFDC0A3002A2419 /* WOT-Scryfall.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "WOT-Scryfall.json"; path = "../../../../../Downloads/WOT-Scryfall.json"; sourceTree = "<group>"; };
-		04F222472AFDC381002A2419 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
 		04F222492AFDDA6A002A2419 /* LegalitiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalitiesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,7 +101,6 @@
 			children = (
 				04F222192AFDB911002A2419 /* Scryfall_app_W09App.swift */,
 				04F2221B2AFDB911002A2419 /* ContentView.swift */,
-				04F222472AFDC381002A2419 /* RemoteImage.swift */,
 				04F2221D2AFDB914002A2419 /* Assets.xcassets */,
 				04F222432AFDC0A3002A2419 /* WOT-Scryfall.json */,
 				04F2221F2AFDB914002A2419 /* Preview Content */,
@@ -270,7 +267,6 @@
 				04F2221C2AFDB911002A2419 /* ContentView.swift in Sources */,
 				04F2224A2AFDDA6A002A2419 /* LegalitiesView.swift in Sources */,
 				04F2221A2AFDB911002A2419 /* Scryfall_app_W09App.swift in Sources */,
-				04F222482AFDC381002A2419 /* RemoteImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

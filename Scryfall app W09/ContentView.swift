@@ -329,7 +329,7 @@ struct CardDetail: View {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.white)
                                 .padding(5)
-                                .font(Font.system(size: 20, weight: .bold)) // Adjust size and weight
+                                .font(Font.system(size: 20, weight: .bold))
 
                         
                         }
@@ -388,7 +388,7 @@ struct CardDetail: View {
                                                 Alert(
                                                     title: Text("Added to your collection successfully"),
                                                     message: Text("Check it out on your collection"),
-                                                    dismissButton: .default(Text("OKAY")) // Single button with "OK" label
+                                                    dismissButton: .default(Text("OKAY"))
                                                 )
                                             }
                         }
@@ -513,7 +513,7 @@ struct CardDetail: View {
                             VStack(spacing:0) {
 
                                 Text(cards[currentIndex].set_name)
-                                    .font(.system(size: 14))  // Adjust the font size as needed
+                                    .font(.system(size: 14))
                                     .foregroundColor(.white)
                                     .padding()
                                     .frame(maxWidth: .infinity, maxHeight: 40)
@@ -732,16 +732,16 @@ struct BottomNavBarButton: View {
     let tab: SelectedTab
     let text: String
     let imageName: String
-    @Binding var selectedTab: SelectedTab // Use @Binding here
+    @Binding var selectedTab: SelectedTab
 
     var body: some View {
         VStack {
             Image(systemName: imageName)
                 .font(.system(size: 24))
-                .foregroundColor(selectedTab == tab ? .blue : .gray) // Use selectedTab instead of isSelected
+                .foregroundColor(selectedTab == tab ? .blue : .gray)
             Text(text)
                 .font(.caption)
-                .foregroundColor(selectedTab == tab ? .blue : .gray) // Use selectedTab instead of isSelected
+                .foregroundColor(selectedTab == tab ? .blue : .gray)
         }
     }
 }
@@ -754,7 +754,7 @@ struct ContentView: View {
     @State private var searchText = ""
     @State private var currentSorting: CardSorting = .ascending
     @State private var currentIndex = 0
-    @State private var selectedTab: SelectedTab = .search // Use @State here
+    @State private var selectedTab: SelectedTab = .search
     @State private var isCardDetailViewActive = false
     @State private var collection: [Card] = []
     
