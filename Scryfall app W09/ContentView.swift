@@ -110,59 +110,54 @@ struct ManaCostView: View {
         HStack(spacing: 5) {
             ForEach(manaCost.manaSymbols, id: \.self) { symbol in
                 ZStack {
-                    Circle()
-                        .fill(circleColor(for: manaCost))
-                        .frame(width: 30, height: 30)
-                    Text(symbol)
-                        .font(.title)
-                        .foregroundColor(.white)
+                    Image(uiImage: symbol)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                    Image(uiImage: symbol)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
                 }
+                
             }
-        }
-    }
-
-    func circleColor(for manaCost: String) -> Color {
-        guard manaCost.count >= 2 else {
-            return .white // Default color if manaCost is too short
-        }
-
-        let colorCode = manaCost[manaCost.index(manaCost.startIndex, offsetBy: 1)]
-        switch colorCode {
-        case "W":
-            return .gray
-        case "U":
-            return .blue
-        case "B":
-            return .black
-        case "R":
-            return .red
-        case "G":
-            return .green
-        default:
-            return .gray
         }
     }
 }
 
 extension String {
-    var manaSymbols: [String] {
-        var symbols: [String] = []
+    var manaSymbols: [UIImage] {
+        var symbols: [UIImage] = []
 
         for character in self {
             switch character {
             case "W":
-                symbols.append("")
+                symbols.append(UIImage(named: "white") ?? UIImage()) // Replace "white" with your actual image name
             case "U":
-                symbols.append("")
+                symbols.append(UIImage(named: "blue") ?? UIImage())
             case "B":
-                symbols.append("")
+                symbols.append(UIImage(named: "black") ?? UIImage())
             case "R":
-                symbols.append("")
+                symbols.append(UIImage(named: "red") ?? UIImage())
             case "G":
-                symbols.append("")
+                symbols.append(UIImage(named: "green") ?? UIImage())
+            case "1":
+                symbols.append(UIImage(named: "one") ?? UIImage()) // Replace "white" with your actual image name
+            case "2":
+                symbols.append(UIImage(named: "two") ?? UIImage())
+            case "3":
+                symbols.append(UIImage(named: "three") ?? UIImage())
+            case "4":
+                symbols.append(UIImage(named: "four") ?? UIImage())
+            case "5":
+                symbols.append(UIImage(named: "five") ?? UIImage())
+            case "0":
+                symbols.append(UIImage(named: "zero") ?? UIImage())
+            case "7":
+                symbols.append(UIImage(named: "seven") ?? UIImage())
             default:
                 if let intValue = Int(String(character)) {
-                    symbols.append("")
+                    symbols.append(UIImage(named: "") ?? UIImage())
                 }
             }
         }
@@ -170,6 +165,7 @@ extension String {
         return symbols
     }
 }
+
 
 extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
@@ -894,6 +890,7 @@ struct ContentView: View {
                                     .background(Color(UIColor(hex: "#364a61")!))
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
+                                    .disableAutocorrection(true)
                                     .overlay(
                                         HStack {
                                             Spacer()
