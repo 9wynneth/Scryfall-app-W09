@@ -747,6 +747,8 @@ struct BottomNavBarButton: View {
 }
 
 
+
+
 struct ContentView: View {
     @State private var cards: [Card] = []
     @State private var searchText = ""
@@ -871,15 +873,15 @@ struct ContentView: View {
         else {
             ZStack(alignment: .bottom) {
                 NavigationView {
-                    ScrollView {
-                        VStack(spacing: 0) {
+                    VStack(spacing: 0) {
+                        ZStack {
                             HStack {
                                 Image(systemName: "magnifyingglass")
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.white.opacity(0.5))
                                     .padding(.leading, 8)
-                                TextField("Search Cards", text: $searchText)
-                                    .padding(8)
-                                    .background(Color(UIColor(hex: "#3A4F67")!))
+                                TextField("", text: $searchText, prompt: Text("Search Cards").foregroundColor(.white.opacity(0.5)))
+                                    .padding(10)
+                                    .background(Color(UIColor(hex: "#364a61")!))
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
                                     .overlay(
@@ -896,6 +898,7 @@ struct ContentView: View {
                                             }
                                         }.foregroundColor(.white)
                                     )
+                                
                                 Menu {
                                     Button(action: {
                                         currentSorting = .ascending
@@ -903,7 +906,7 @@ struct ContentView: View {
                                     }) {
                                         Label("Sort A to Z", systemImage: "arrow.up.circle")
                                     }
-
+                                    
                                     Button(action: {
                                         currentSorting = .descending
                                         cards.sort { $0.name > $1.name }
@@ -916,13 +919,10 @@ struct ContentView: View {
                                         .padding(.trailing, 8)
                                 }
                             }
-                            .padding()
+                            .padding(.top,70)
                             .background(Color(#colorLiteral(red: 0.1735038753, green: 0.2392750688, blue: 0.3176470697, alpha: 1)))
                             .ignoresSafeArea(edges: .top)
-                            .edgesIgnoringSafeArea(.all)
-
-                            Spacer()
-
+                            
                             Rectangle()
                                 .fill(Color(UIColor(hex: "#2C3D51")!))
                                 .frame(height: 40)
@@ -935,43 +935,45 @@ struct ContentView: View {
                                             .font(.system(size: 12))
                                     }
                                 )
+                                .padding(.top,50)
                                 .ignoresSafeArea()
                                 .edgesIgnoringSafeArea(.all)
-                                .fixedSize(horizontal: false, vertical: true)
                         }
-
-                        LazyVGrid(columns: [
-                            GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
-                            GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
-                            GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3))
-                        ], spacing: 10) {
-                            if searchText.isEmpty || !filteredCards.isEmpty {
-                                ForEach(filteredCards.indices, id: \.self) { index in
-                                    NavigationLink(
-                                        destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards, collection: $collection)
-                                    ) {
-                                        VStack {
-                                            RemoteImage(url: filteredCards[index].image_uris.small)
-                                                .cornerRadius(10)
-                                                .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
-                                            Text(filteredCards[index].name)
-                                                .font(.caption)
-                                                .foregroundColor(.black)
+                        ScrollView {
+                            
+                            LazyVGrid(columns: [
+                                GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
+                                GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3)),
+                                GridItem(.fixed((UIScreen.main.bounds.width - 30) / 3))
+                            ], spacing: 10) {
+                                if searchText.isEmpty || !filteredCards.isEmpty {
+                                    ForEach(filteredCards.indices, id: \.self) { index in
+                                        NavigationLink(
+                                            destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards, collection: $collection)
+                                        ) {
+                                            VStack {
+                                                RemoteImage(url: filteredCards[index].image_uris.small)
+                                                    .cornerRadius(10)
+                                                    .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
+                                                Text(filteredCards[index].name)
+                                                    .font(.caption)
+                                                    .foregroundColor(.black)
+                                            }
+                                        }
+                                        .onChange(of: isCardDetailViewActive) { newValue in
+                                            // Update the state to hide the bottom nav bar when entering the card detail view
+                                            withAnimation {
+                                                selectedTab = .search
+                                            }
                                         }
                                     }
-                                    .onChange(of: isCardDetailViewActive) { newValue in
-                                        // Update the state to hide the bottom nav bar when entering the card detail view
-                                        withAnimation {
-                                            selectedTab = .search
-                                        }
-                                    }
+                                } else {
+                                    NoResultsView()
                                 }
-                            } else {
-                                NoResultsView()
                             }
+                            .padding()
+                            .background(Color.white)
                         }
-                        .padding()
-                        .background(Color.white)
                     }
                     .overlay(bottomNavBar(), alignment: .bottom)
                     .onAppear {
