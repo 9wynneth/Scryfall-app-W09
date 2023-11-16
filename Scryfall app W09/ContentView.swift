@@ -12,6 +12,8 @@ struct Card: Identifiable, Codable {
     let artist: String
     let prices: Prices?
     let set_name: String
+    let foil: Bool
+
     
 }
 
@@ -373,85 +375,75 @@ struct CardDetail: View {
                             ).frame(maxWidth: .infinity)
 
      
-                        HStack {
-                            Button(action: {
-                                        addToCollection()
+                        VStack {
+
+                            
+                            
+                            HStack {
+                                Spacer()
+                                if hasPreviousCard {
+                                    Button(action: {
+                                        withAnimation {
+                                            self.previousCard()
+                                        }
                                     }) {
-                                        Text("Add to Collection")
-                                            .padding()
-                                            .foregroundColor(.white)
-                                            .background(Color(UIColor(hex: "#2C3D51")!))
-                                            .cornerRadius(10)
-                                    }
-                                    .padding()
-                                    .alert(isPresented: $showAlert) {
-                                                Alert(
-                                                    title: Text("Added to your collection successfully"),
-                                                    message: Text("Check it out on your collection"),
-                                                    dismissButton: .default(Text("OKAY"))
-                                                )
-                                            }
-                        }
+                                        Image(systemName: "chevron.left")
+                                            .foregroundColor(.gray)
+                                            .padding(5)
+                                            .font(Font.system(size: 20, weight: .bold))
 
-                        HStack {
-                            Spacer()
-                            if hasPreviousCard {
-                                Button(action: {
-                                    withAnimation {
-                                        self.previousCard()
                                     }
-                                }) {
-                                    Image(systemName: "chevron.left")
-                                        .foregroundColor(.gray)
-                                        .padding(5)
+                                    .disabled(!hasPreviousCard)
                                 }
-                                .disabled(!hasPreviousCard)
-                            }
-                            Spacer()
-                            Button(action: {
-                                selectedTab = .version
-                            }) {
-                                Text("Details")
-                                    .foregroundColor(selectedTab == .version ? .white : .gray)
-                                    .padding()
-                                    .background(selectedTab == .version ? Color.red : Color.white)
-                                    .border(Color.gray, width: 1)
-                                    .clipShape(Capsule(style: .continuous))
-                                    .frame(maxWidth: .infinity)
-                            }
-                            Spacer()
-
-                            Button(action: {
-                                selectedTab = .ruling
-                            }) {
-                                Text("Ruling")
-                                    .foregroundColor(selectedTab == .ruling ? .white : .gray)
-                                    .padding()
-                                    .background(selectedTab == .ruling ? Color.red : Color.white)
-                                    .border(Color.gray, width: 1)
-                                    .clipShape(Capsule(style: .continuous))
-                                    .frame(maxWidth: .infinity, maxHeight: 50)
-                            }
-
-                            Spacer()
-
-                            if hasNextCard {
+                                Spacer()
                                 Button(action: {
-                                    withAnimation {
-                                        self.nextCard()
-                                    }
+                                    selectedTab = .version
                                 }) {
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.gray)
-                                        .padding(5)
+                                    Text("Details")
+                                        .foregroundColor(selectedTab == .version ? .white : .gray)
+                                        .padding()
+                                        .background(selectedTab == .version ? Color.red : Color.white)
+                                        .border(Color.gray, width: 1)
+                                        .clipShape(Capsule(style: .continuous))
+                                        .frame(maxWidth: .infinity)
                                 }
-                                .disabled(!hasNextCard)
+                                Spacer()
+                                
+                                Button(action: {
+                                    selectedTab = .ruling
+                                }) {
+                                    Text("Ruling")
+                                        .foregroundColor(selectedTab == .ruling ? .white : .gray)
+                                        .padding()
+                                        .background(selectedTab == .ruling ? Color.red : Color.white)
+                                        .border(Color.gray, width: 1)
+                                        .clipShape(Capsule(style: .continuous))
+                                        .frame(maxWidth: .infinity, maxHeight: 50)
+                                }
+                                
+                                Spacer()
+                                
+                                if hasNextCard {
+                                    Button(action: {
+                                        withAnimation {
+                                            self.nextCard()
+                                        }
+                                    }) {
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(.gray)
+                                            .padding(5)
+                                            .font(Font.system(size: 20, weight: .bold))
 
+                                    }
+                                    .disabled(!hasNextCard)
+                                    
+                                }
                             }
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.top, 5)
-                        .padding(.bottom, 5)
+                            .padding(.horizontal, 10)
+                            .padding(.top, 10)
+                            .padding(.bottom, 10)
+                            .overlay(Rectangle().frame(height: 1).foregroundColor(Color(UIColor(hex: "#2C3D51")!)), alignment: .top)
+                   }
                     }
                     
 
@@ -599,6 +591,24 @@ struct CardDetail: View {
 
                             }.frame(maxWidth: .infinity)
                         }
+                    }
+                    Button(action: {
+                        addToCollection()
+                    }) {
+                        Text("Add to Collection")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color(UIColor(hex: "#2C3D51")!))
+                            .cornerRadius(10)
+                            .frame(maxWidth: .infinity) // Set the button width to full
+                    }
+                    .padding()
+                    .alert(isPresented: $showAlert) {
+                        Alert(
+                            title: Text("Added to your collection successfully"),
+                            message: Text("Check it out on your collection"),
+                            dismissButton: .default(Text("OKAY"))
+                        )
                     }
                 }
                 .navigationBarBackButtonHidden(true)
@@ -952,13 +962,35 @@ struct ContentView: View {
                                             destination: CardDetail(card: filteredCards[index], currentIndex: index, cards: filteredCards, collection: $collection)
                                         ) {
                                             VStack {
-                                                RemoteImage(url: filteredCards[index].image_uris.small)
-                                                    .cornerRadius(10)
-                                                    .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
+                                                ZStack(alignment: .bottomLeading) {
+                                                    RemoteImage(url: filteredCards[index].image_uris.small)
+                                                        .cornerRadius(10)
+                                                        .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
+                                                    
+                                                    VStack {
+                                                        Spacer()
+                                                        HStack {
+                                                            if filteredCards[index].foil {
+                                                                        Circle()
+                                                                            .foregroundColor(.yellow)
+                                                                            .frame(width: 15, height: 15)
+                                                                            .overlay(
+                                                                                Text("F")
+                                                                                    .foregroundColor(.black)
+                                                                                    .font(.system(size: 8).bold())
+                                                                            )
+                                                                            .padding(.horizontal, 8)
+                                                                            .padding(.bottom, 5)
+                                                                    }
+                                                        }
+                                                    }
+                                                }
+                                                
                                                 Text(filteredCards[index].name)
                                                     .font(.caption)
                                                     .foregroundColor(.black)
                                             }
+
                                         }
                                         .onChange(of: isCardDetailViewActive) { newValue in
                                             // Update the state to hide the bottom nav bar when entering the card detail view
