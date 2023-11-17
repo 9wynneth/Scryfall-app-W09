@@ -418,7 +418,8 @@ struct CardDetail: View {
                                 }) {
                                     Text("Details")
                                         .foregroundColor(selectedTab == .version ? .white : .gray)
-                                        .padding()
+                                        .padding(.horizontal,45)
+                                        .padding(.vertical,15)
                                         .background(selectedTab == .version ? Color.red : Color.white)
                                         .border(Color.gray, width: 1)
                                         .clipShape(Capsule(style: .continuous))
@@ -431,7 +432,8 @@ struct CardDetail: View {
                                 }) {
                                     Text("Ruling")
                                         .foregroundColor(selectedTab == .ruling ? .white : .gray)
-                                        .padding()
+                                        .padding(.horizontal,45)
+                                        .padding(.vertical,15)
                                         .background(selectedTab == .ruling ? Color.red : Color.white)
                                         .border(Color.gray, width: 1)
                                         .clipShape(Capsule(style: .continuous))
