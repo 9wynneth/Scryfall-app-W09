@@ -1,5 +1,6 @@
 # Scryfall-app-W09
 Scryfall App
+
 Welcome to the Scryfall App, a user-friendly application designed for Magic: The Gathering (MTG) enthusiasts, built using SwiftUI.
 Features:
 - Card List Display:
