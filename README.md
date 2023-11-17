@@ -2,6 +2,7 @@
 Scryfall App
 
 Welcome to the Scryfall App, a user-friendly application designed for Magic: The Gathering (MTG) enthusiasts, built using SwiftUI.
+
 Features:
 - Card List Display:
     * View a scrollable comprehensive list of Magic: The Gathering cards.
@@ -45,6 +46,7 @@ Features:
 ![Simulator Screenshot - iPhone 14 Pro - 2023-11-17 at 23 31 42](https://github.com/9wynneth/Scryfall-app-W09/assets/95265271/c8bd7f82-b453-4ec5-96af-4c15b81ba74d)
 ![Simulator Screenshot - iPhone 14 Pro - 2023-11-17 at 23 32 11](https://github.com/9wynneth/Scryfall-app-W09/assets/95265271/e264d960-a532-44f3-9343-a74477eb5a2a)
 ![Simulator Screenshot - iPhone 14 Pro - 2023-11-17 at 23 32 22](https://github.com/9wynneth/Scryfall-app-W09/assets/95265271/465f60ca-7ec6-45ee-a6e6-b03b71cd0e15)
+![Simulator Screenshot - iPhone 14 Pro - 2023-11-17 at 23 36 24](https://github.com/9wynneth/Scryfall-app-W09/assets/95265271/94433ec8-0363-40b6-874c-c7e351a68f31)
 
 
 
