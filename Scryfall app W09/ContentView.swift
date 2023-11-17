@@ -348,7 +348,7 @@ struct CardDetail: View {
 
                         Spacer()
                         ManaCostView(manaCost: cards[currentIndex].mana_cost)
-                            .padding(5)
+                            .padding(10)
                     }
 
                     VStack(spacing: 2) {
@@ -508,8 +508,7 @@ struct CardDetail: View {
 
                                     .background(
                                         RoundedRectangle(cornerRadius: 10)
-                                            .fill(Color(UIColor(hex: "#2C3D51")!))
-                                            .opacity(0.8)
+                                            .fill(Color.red)
                                     ).frame(maxWidth: .infinity, maxHeight: 20)
                                     .edgesIgnoringSafeArea(.all)
                                     .padding(.horizontal, -5)
@@ -659,8 +658,6 @@ struct CardDetail: View {
                     .transition(.opacity)
                     .animation(.easeInOut)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    
-
                 }
             }.gesture(
                 DragGesture()
@@ -811,7 +808,7 @@ struct ContentView: View {
             ZStack {
                 VStack {
                     Spacer()
-                    ProgressView("Maintainance")
+                    ProgressView("Maintenance")
                         .progressViewStyle(CircularProgressViewStyle())
                         .padding()
                     Spacer()
