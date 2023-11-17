@@ -304,6 +304,25 @@ struct CardDetail: View {
                 print("Card is already in the collection.")
             }
         }
+    
+    
+    private func replaceSymbolsWithImages(text: String) -> Text {
+        var modifiedText = text
+        modifiedText = modifiedText.replacingOccurrences(of: "{W/B}", with: imageForSymbol("{W/B}"))
+        modifiedText = modifiedText.replacingOccurrences(of: "{2}", with: imageForSymbol("{2}"))
+        return Text(modifiedText)
+    }
+
+    private func imageForSymbol(_ symbol: String) -> String {
+        let imageName = symbol
+            .replacingOccurrences(of: "{", with: "")
+            .replacingOccurrences(of: "}", with: "")
+            .replacingOccurrences(of: "/", with: "")
+            .appending(".png")
+
+        return imageName
+    }
+    
   
 
     var body: some View {
@@ -360,7 +379,7 @@ struct CardDetail: View {
                             .padding(.horizontal)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .offset(x: -15)
-
+          
                         Text(cards[currentIndex].oracle_text.replacingOccurrences(of: "\n", with: "\n\n"))
                             .font(.body)
                             .padding(15)
@@ -847,26 +866,28 @@ struct ContentView: View {
         var bottomNavBar: () -> AnyView
         
         var body: some View {
-            ZStack {
-                NavigationView {
-                    ForEach(recentlyViewed) { card in
-                        NavigationLink(destination: CardDetail(card: card, currentIndex: 0, cards: recentlyViewed, collection: $recentlyViewed)) {
-                            Text(card.name)
-                        }
-                    }
-//                    .onDelete { indexSet in
-//                        deleteItem(at: indexSet)
-//                    }
-
-                }
-                .onAppear {
-                    recentlyViewed = loadRecentlyViewed()
-                }
-                bottomNavBar()
-                .offset(y: 370)
+            VStack {
+                
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .ignoresSafeArea()
+//            ZStack {
+//                NavigationView {
+//                    ForEach(recentlyViewed) { card in
+//                        NavigationLink(destination: CardDetail(card: card, currentIndex: 0, cards: recentlyViewed, collection: $recentlyViewed)) {
+//                            Text(card.name)
+//                        }
+//                    }
+////                    .onDelete { indexSet in
+////                        deleteItem(at: indexSet)
+////                    }
+//
+//                }
+//                .onAppear {
+//                    recentlyViewed = loadRecentlyViewed()
+//                }
+//                bottomNavBar()
+//                .offset(y: 370)
+//            }
+//            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         
         mutating private func deleteItem(at offsets: IndexSet) {
@@ -875,8 +896,18 @@ struct ContentView: View {
 
         
         private func loadRecentlyViewed() -> [Card] {
+            if let data = UserDefaults.standard.data(forKey: "RecentlyViewedCards") {
+                do {
+                    let decoder = JSONDecoder()
+                    let recentlyViewed = try decoder.decode([Card].self, from: data)
+                    return recentlyViewed
+                } catch {
+                    print("Error decoding recently viewed cards: \(error)")
+                }
+            }
             return []
         }
+
         
     }
     
@@ -1024,23 +1055,33 @@ struct ContentView: View {
     private func handleCardTap(_ card: Card) {
         if let index = recentlyViewed.firstIndex(where: { $0.id == card.id }) {
             recentlyViewed.remove(at: index)
-            recentlyViewed.insert(card, at: 0)
-        } else {
-            recentlyViewed.insert(card, at: 0)
-            
-            if recentlyViewed.count > 20 {
-                recentlyViewed = Array(recentlyViewed.prefix(20))
-            }
+        }
+        
+        recentlyViewed.insert(card, at: 0)
+        
+        if recentlyViewed.count > 20 {
+            recentlyViewed = Array(recentlyViewed.prefix(20))
+        }
+        
+        // Save to UserDefaults
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(recentlyViewed)
+            UserDefaults.standard.set(data, forKey: "RecentlyViewedCards")
+        } catch {
+            print("Error encoding recently viewed cards: \(error)")
         }
     }
 
+
+
     var body: some View {
-        if selectedTab == .scan || selectedTab == .decks {
+        if selectedTab == .scan || selectedTab == .decks || selectedTab == .home {
             InProgressView(selectedTab: $selectedTab, bottomNavBar: { AnyView(self.bottomNavBar()) })
         }
-        else if selectedTab == .home {
-            HomeView(selectedTab: $selectedTab, recentlyViewed: $recentlyViewed, bottomNavBar: { AnyView(self.bottomNavBar()) })
-        }
+//        else if selectedTab == .home {
+//            HomeView(selectedTab: $selectedTab, recentlyViewed: $recentlyViewed, bottomNavBar: { AnyView(self.bottomNavBar()) })
+//        }
         else if selectedTab == .collection {
             CollectionView(selectedTab: $selectedTab, collection: $collection, bottomNavBar: { AnyView(self.bottomNavBar()) })
         }
@@ -1172,9 +1213,7 @@ struct ContentView: View {
 
                                         }
                                         .onTapGesture {
-                                                    // Handle the tap on a card
                                                     handleCardTap(filteredCards[index])
-                                                    // Navigate to the card detail view
                                                     selectedTab = .search
                                                     isCardDetailViewActive = true
                                                 }
