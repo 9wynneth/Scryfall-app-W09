@@ -13,6 +13,7 @@ struct Card: Identifiable, Codable {
     let prices: Prices?
     let set_name: String
     let foil: Bool
+    
 
     
 }
@@ -595,7 +596,7 @@ struct CardDetail: View {
                             .foregroundColor(.white)
                             .background(Color(UIColor(hex: "#2C3D51")!))
                             .cornerRadius(10)
-                            .frame(maxWidth: .infinity) // Set the button width to full
+                            .frame(maxWidth: .infinity)
                     }
                     .padding()
                     .alert(isPresented: $showAlert) {
@@ -683,6 +684,7 @@ struct CardDetail: View {
 }
 
 
+
 extension UIColor {
     convenience init?(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -748,9 +750,44 @@ struct BottomNavBarButton: View {
         }
     }
 }
+struct CardItem: View {
+    let card: Card
+
+    var body: some View {
+        VStack {
+            RemoteImage(url: card.image_uris.small)
+                .cornerRadius(10)
+                .frame(width: 100, height: 150) // Adjust the size as needed
+
+            Text(card.name)
+                .font(.caption)
+                .foregroundColor(.black)
+                .multilineTextAlignment(.center)
+                .padding(.top, 5)
+        }
+    }
+}
 
 
+extension View {
+  func navigationBarBackground(_ background: Color = Color(UIColor(hex: "#2C3D51")!)) -> some View {
+    return self
+      .modifier(ColoredNavigationBar(background: background))
+  }
+}
 
+struct ColoredNavigationBar: ViewModifier {
+  var background: Color
+  
+  func body(content: Content) -> some View {
+    content
+      .toolbarBackground(
+        background,
+        for: .navigationBar
+      )
+      .toolbarBackground(.visible, for: .navigationBar)
+  }
+}
 
 struct ContentView: View {
     @State private var cards: [Card] = []
@@ -760,6 +797,8 @@ struct ContentView: View {
     @State private var selectedTab: SelectedTab = .search
     @State private var isCardDetailViewActive = false
     @State private var collection: [Card] = []
+    @State private var recentlyViewed: [Card] = [] // Add recentlyViewed here
+
     
 
     
@@ -798,7 +837,48 @@ struct ContentView: View {
         .background(Color.white)
         .edgesIgnoringSafeArea(.bottom)
     }
+    
+    private struct HomeView: View {
+        @Binding var selectedTab: SelectedTab
+        @Binding var recentlyViewed: [Card] // Change here
+//        @State private var recentlyViewed: [Card] = loadRecentlyViewed()
 
+        var bottomNavBar: () -> AnyView
+        
+        var body: some View {
+            ZStack {
+                NavigationView {
+                    ForEach(recentlyViewed) { card in
+                        NavigationLink(destination: CardDetail(card: card, currentIndex: 0, cards: recentlyViewed, collection: $recentlyViewed)) {
+                            Text(card.name)
+                        }
+                    }
+//                    .onDelete { indexSet in
+//                        // Delete item from recentlyViewed when swipe to delete is performed
+//                        deleteItem(at: indexSet)
+//                    }
+
+                }
+                .onAppear {
+                    recentlyViewed = loadRecentlyViewed()
+                }
+                bottomNavBar()
+                .offset(y: 370)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
+        }
+        
+        mutating private func deleteItem(at offsets: IndexSet) {
+            recentlyViewed.remove(atOffsets: offsets)
+        }
+
+        
+        private func loadRecentlyViewed() -> [Card] {
+            return [] // Implement your logic to load recently viewed cards
+        }
+        
+    }
     
     private struct InProgressView: View {
         @Binding var selectedTab: SelectedTab
@@ -821,35 +901,106 @@ struct ContentView: View {
         }
     }
     
-    private struct collectionView: View {
+    private struct CollectionView: View {
         @Binding var selectedTab: SelectedTab
-        @Binding var collection: [Card] // Assuming you have a collection binding
+        @Binding var collection: [Card]
+        @State private var isEditing = false
         var bottomNavBar: () -> AnyView
+        
         var body: some View {
             ZStack {
                 NavigationView {
-                    List {
-                        ForEach(collection) { card in
-                            NavigationLink(destination: CardDetail(card: card, currentIndex: 0, cards: collection, collection: $collection)) {
-                                Text(card.name)
+                    ScrollView {
+                        Text("My Collection")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding()
+                        
+                        LazyVGrid(columns: Array(repeating: GridItem(), count: 3), spacing: 10) {
+                            ForEach(collection.indices, id: \.self) { index in
+                                NavigationLink(destination: CardDetail(card: collection[index], currentIndex: 0, cards: collection, collection: $collection)) {
+                                    VStack {
+                                        ZStack(alignment: .bottomTrailing) {
+                                            RemoteImage(url: collection[index].image_uris.small)
+                                                .cornerRadius(10)
+                                                .frame(width: (UIScreen.main.bounds.width - 30) / 3, height: 150)
+                                            
+                                            if collection[index].foil {
+                                                Spacer()
+                                                BadgeView(text: "F")
+                                                    .offset(x: -8, y: -5)
+                                            }
+                                        }
+                                        
+                                        HStack {
+                                            if isEditing {
+                                                Spacer()
+                                                deleteButton(index: index)
+                                            }
+                                            Text(collection[index].name)
+                                                .font(.caption)
+                                                .foregroundColor(.black)
+                                        }
+                                    }
+                                }
                             }
+                            .onDelete(perform: deleteItem)
                         }
-                        .onDelete(perform: deleteItem)
+                        .padding(.top, 10)
+                        .navigationBarItems(trailing: editButton)
+                        .navigationBarBackground()
+                        .foregroundColor(Color.white)
                     }
-                    .navigationBarTitle("My Collection")
-                    .navigationBarItems(trailing: EditButton()) // Add EditButton to enable deletion
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    .overlay(bottomNavBar(), alignment: .bottom)
                 }
-                bottomNavBar()
-                    .offset(y: 370)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .ignoresSafeArea()
         }
+        
+        private var editButton: some View {
+            Button(action: {
+                withAnimation {
+                    isEditing.toggle()
+                }
+            }) {
+                Text(isEditing ? "Done" : "Edit")
+            }
+        }
+        
         private func deleteItem(at offsets: IndexSet) {
             collection.remove(atOffsets: offsets)
         }
+        
+        private func deleteButton(index: Int) -> some View {
+            Button(action: {
+                // Handle delete action for the specific card
+                deleteItem(at: IndexSet([index]))
+            }) {
+                Image(systemName: "minus.circle.fill")
+                    .foregroundColor(.red)
+            }
+        }
     }
-    
+
+
+
+    struct BadgeView: View {
+        var text: String
+        
+        var body: some View {
+            Circle()
+                .foregroundColor(.yellow)
+                .frame(width: 15, height: 15)
+                .overlay(
+                    Text(text)
+                        .foregroundColor(.black)
+                        .font(.system(size: 8).bold())
+                )
+                .padding(.horizontal, 8)
+                .padding(.bottom, 5)
+        }
+    }
+
     
     
     enum CardSorting: String {
@@ -864,13 +1015,33 @@ struct ContentView: View {
             return cards.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
+    
+    private func handleCardTap(_ card: Card) {
+        // Check if the card is already in recentlyViewed
+        if let index = recentlyViewed.firstIndex(where: { $0.id == card.id }) {
+            // If the card is already in recentlyViewed, move it to the front
+            recentlyViewed.remove(at: index)
+            recentlyViewed.insert(card, at: 0)
+        } else {
+            // If the card is not in recentlyViewed, add it to the front
+            recentlyViewed.insert(card, at: 0)
+            
+            // Limit the recentlyViewed array to 20 cards
+            if recentlyViewed.count > 20 {
+                recentlyViewed = Array(recentlyViewed.prefix(20))
+            }
+        }
+    }
 
     var body: some View {
-        if selectedTab == .scan || selectedTab == .home || selectedTab == .decks {
+        if selectedTab == .scan || selectedTab == .decks {
             InProgressView(selectedTab: $selectedTab, bottomNavBar: { AnyView(self.bottomNavBar()) })
         }
+        else if selectedTab == .home {
+            HomeView(selectedTab: $selectedTab, recentlyViewed: $recentlyViewed, bottomNavBar: { AnyView(self.bottomNavBar()) })
+        }
         else if selectedTab == .collection {
-            collectionView(selectedTab: $selectedTab, collection: $collection, bottomNavBar: { AnyView(self.bottomNavBar()) })
+            CollectionView(selectedTab: $selectedTab, collection: $collection, bottomNavBar: { AnyView(self.bottomNavBar()) })
         }
 
         else {
@@ -916,6 +1087,19 @@ struct ContentView: View {
                                         cards.sort { $0.name > $1.name }
                                     }) {
                                         Label("Sort Z to A", systemImage: "arrow.down.circle")
+                                    }
+                                    Button(action: {
+                                        currentSorting = .ascending
+                                        cards.sort { $0.name < $1.name }
+                                    }) {
+                                        Label("ASC Collector Number", systemImage: "arrow.up.circle")
+                                    }
+                                    
+                                    Button(action: {
+                                        currentSorting = .descending
+                                        cards.sort { $0.name > $1.name }
+                                    }) {
+                                        Label("DESC Collector Number", systemImage: "arrow.down.circle")
                                     }
                                 } label: {
                                     Image(systemName: "arrow.up.arrow.down.circle")
@@ -986,12 +1170,13 @@ struct ContentView: View {
                                             }
 
                                         }
-                                        .onChange(of: isCardDetailViewActive) { newValue in
-                                            // Update the state to hide the bottom nav bar when entering the card detail view
-                                            withAnimation {
-                                                selectedTab = .search
-                                            }
-                                        }
+                                        .onTapGesture {
+                                                    // Handle the tap on a card
+                                                    handleCardTap(filteredCards[index])
+                                                    // Navigate to the card detail view
+                                                    selectedTab = .search
+                                                    isCardDetailViewActive = true
+                                                }
                                     }
                                 } else {
                                     NoResultsView()
@@ -1023,8 +1208,6 @@ struct ContentView: View {
             .edgesIgnoringSafeArea(.all)
         }
     }
-
-
 }
 
 
