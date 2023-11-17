@@ -13,6 +13,7 @@ struct Card: Identifiable, Codable {
     let prices: Prices?
     let set_name: String
     let foil: Bool
+    let collector_number: String
     
 
     
@@ -133,7 +134,7 @@ extension String {
         for character in self {
             switch character {
             case "W":
-                symbols.append(UIImage(named: "white") ?? UIImage()) // Replace "white" with your actual image name
+                symbols.append(UIImage(named: "white") ?? UIImage())
             case "U":
                 symbols.append(UIImage(named: "blue") ?? UIImage())
             case "B":
@@ -143,7 +144,7 @@ extension String {
             case "G":
                 symbols.append(UIImage(named: "green") ?? UIImage())
             case "1":
-                symbols.append(UIImage(named: "one") ?? UIImage()) // Replace "white" with your actual image name
+                symbols.append(UIImage(named: "one") ?? UIImage())
             case "2":
                 symbols.append(UIImage(named: "two") ?? UIImage())
             case "3":
@@ -757,7 +758,7 @@ struct CardItem: View {
         VStack {
             RemoteImage(url: card.image_uris.small)
                 .cornerRadius(10)
-                .frame(width: 100, height: 150) // Adjust the size as needed
+                .frame(width: 100, height: 150)
 
             Text(card.name)
                 .font(.caption)
@@ -797,7 +798,7 @@ struct ContentView: View {
     @State private var selectedTab: SelectedTab = .search
     @State private var isCardDetailViewActive = false
     @State private var collection: [Card] = []
-    @State private var recentlyViewed: [Card] = [] // Add recentlyViewed here
+    @State private var recentlyViewed: [Card] = []
 
     
 
@@ -840,7 +841,7 @@ struct ContentView: View {
     
     private struct HomeView: View {
         @Binding var selectedTab: SelectedTab
-        @Binding var recentlyViewed: [Card] // Change here
+        @Binding var recentlyViewed: [Card]
 //        @State private var recentlyViewed: [Card] = loadRecentlyViewed()
 
         var bottomNavBar: () -> AnyView
@@ -854,7 +855,6 @@ struct ContentView: View {
                         }
                     }
 //                    .onDelete { indexSet in
-//                        // Delete item from recentlyViewed when swipe to delete is performed
 //                        deleteItem(at: indexSet)
 //                    }
 
@@ -875,7 +875,7 @@ struct ContentView: View {
 
         
         private func loadRecentlyViewed() -> [Card] {
-            return [] // Implement your logic to load recently viewed cards
+            return []
         }
         
     }
@@ -973,7 +973,6 @@ struct ContentView: View {
         
         private func deleteButton(index: Int) -> some View {
             Button(action: {
-                // Handle delete action for the specific card
                 deleteItem(at: IndexSet([index]))
             }) {
                 Image(systemName: "minus.circle.fill")
@@ -1006,27 +1005,29 @@ struct ContentView: View {
     enum CardSorting: String {
         case ascending = "A-Z"
         case descending = "Z-A"
+        case ascNumber = "ASC Collector number"
+        case dscNumber = "DESC Collector number"
     }
 
     var filteredCards: [Card] {
         if searchText.isEmpty {
             return cards
         } else {
-            return cards.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+            return cards.filter {
+                $0.name.localizedCaseInsensitiveContains(searchText) ||
+                $0.collector_number.localizedCaseInsensitiveContains(searchText)
+            }
         }
     }
+
     
     private func handleCardTap(_ card: Card) {
-        // Check if the card is already in recentlyViewed
         if let index = recentlyViewed.firstIndex(where: { $0.id == card.id }) {
-            // If the card is already in recentlyViewed, move it to the front
             recentlyViewed.remove(at: index)
             recentlyViewed.insert(card, at: 0)
         } else {
-            // If the card is not in recentlyViewed, add it to the front
             recentlyViewed.insert(card, at: 0)
             
-            // Limit the recentlyViewed array to 20 cards
             if recentlyViewed.count > 20 {
                 recentlyViewed = Array(recentlyViewed.prefix(20))
             }
@@ -1089,15 +1090,15 @@ struct ContentView: View {
                                         Label("Sort Z to A", systemImage: "arrow.down.circle")
                                     }
                                     Button(action: {
-                                        currentSorting = .ascending
-                                        cards.sort { $0.name < $1.name }
+                                        currentSorting = .ascNumber
+                                        cards.sort { Int($0.collector_number) ?? 0 < Int($1.collector_number) ?? 0 }
                                     }) {
                                         Label("ASC Collector Number", systemImage: "arrow.up.circle")
                                     }
                                     
                                     Button(action: {
-                                        currentSorting = .descending
-                                        cards.sort { $0.name > $1.name }
+                                        currentSorting = .dscNumber
+                                        cards.sort { Int($0.collector_number) ?? 0 > Int($1.collector_number) ?? 0 }
                                     }) {
                                         Label("DESC Collector Number", systemImage: "arrow.down.circle")
                                     }
